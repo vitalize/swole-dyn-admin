@@ -111,10 +111,12 @@ public class BestGSAAdminServletOfAllTimeTest {
             //This is a bit tricky to test because we are relying on the stubs impl for super class
             //but that doesn't actually do anything...anyone have a better idea?
             @Override
-            protected void printAdminInternal(HttpServletRequest pRequest, HttpServletResponse pResponse, ServletOutputStream pOut) throws ServletException, IOException {
+            protected void printAdminInternal(HttpServletRequest req, HttpServletResponse res, ServletOutputStream out) throws ServletException, IOException {
 
                 //instead of calling super pretend i did
-                pOut.println("<p><textarea rows=\"12\" cols=\"80\" name=\"xmltext\">");
+                out.println("<p><textarea rows=\"12\" cols=\"80\" name=\"xmltext\">");
+
+                out.println("some other content");
             }
         };
 
@@ -146,6 +148,7 @@ public class BestGSAAdminServletOfAllTimeTest {
         verify(mockOutputStream, times(1)).println("<a href=\"https://docs.oracle.com/cd/E24152_01/Platform.10-1/ATGRepositoryGuide/html/s0305repositoryquerylanguage01.html\" target=\"_blank\">Y U FORGET RQL?</a>");
 
 
+        verify(mockOutputStream, times(1)).println("some other content");
     }
 
 

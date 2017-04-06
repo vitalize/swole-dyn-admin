@@ -110,10 +110,12 @@ public class BestGSAAdminServletOfAllTime extends GSAAdminServlet {
                     if(RQL_TEXT_AREA_MARKUP.equals(s)){
 
                         outputRQLToolbar(pOut);
+                        //While we're at it...make that a bit bigger
+                        pOut.println(WIDER_TALLER_RQL_TEXT_AREA_MARKUP);
+                    } else {
+                        //otherwise just pass it on through
+                        pOut.println(s);
                     }
-
-                    //While we're at it...make that a bit bigger
-                    super.println(WIDER_TALLER_RQL_TEXT_AREA_MARKUP);
                 }
             }
         );
