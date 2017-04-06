@@ -3,15 +3,15 @@
   <modelVersion>4.0.0</modelVersion>
 
   <groupId>com.bodybuilding</groupId>
-  <artifactId>atg-dynadmin-servlets</artifactId>
+  <artifactId>swole-dyn-admin</artifactId>
   <version>0.1.1-SNAPSHOT</version>
 
-  <name>atg-dynadmin-servlets</name>
-  <description>A collection of admin servlet overrides for making ATG easier to Dynadmin</description>
+  <name>Swole Dyn Admin</name>
+  <description>A bunch of things to make your Oracle ATG Commerce Dyn Admin swole</description>
   <packaging>jar</packaging>
-  <url>http://github.body.prod/commerce/atg-dynadmin-servlets</url>
+  <url>http://github.body.prod/commerce/swole-dyn-admin</url>
   <scm>
-    <url>http://github.body.prod/commerce/atg-dynadmin-servlets</url>
+    <url>http://github.body.prod/commerce/swole-dyn-admin</url>
   </scm>
 
   <distributionManagement>

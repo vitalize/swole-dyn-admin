@@ -22,10 +22,10 @@ import static org.hamcrest.Matchers.*;
 import static org.mockito.Mockito.*;
 
 
-public class BestGSAAdminServletOfAllTimeTest {
+public class SwoleGSAAdminServletTest {
 
     static String EXPECTED_SCRIPT = new Scanner(
-            GSAAdminServlet.class.getClassLoader().getResourceAsStream("com/vitalize/atg/dynadmin/BestGSAAdminServletOfAllTime.js"),
+            GSAAdminServlet.class.getClassLoader().getResourceAsStream("com/vitalize/atg/dynadmin/SwoleGSAAdminServlet.js"),
             "UTF-8"
         )
         .useDelimiter("\\A")
@@ -61,7 +61,7 @@ public class BestGSAAdminServletOfAllTimeTest {
     @Test
     public void testPrintAdminRQLBoxNotPresent() throws ServletException, IOException {
 
-        BestGSAAdminServletOfAllTime subject = new BestGSAAdminServletOfAllTime(
+        SwoleGSAAdminServlet subject = new SwoleGSAAdminServlet(
             mockGSARepo,
             mockLogger,
             mockNucleus,
@@ -102,7 +102,7 @@ public class BestGSAAdminServletOfAllTimeTest {
         when(mockGSARepo.getItemDescriptorNames())
             .thenReturn(descriptors);
 
-        BestGSAAdminServletOfAllTime subject = new BestGSAAdminServletOfAllTime(
+        SwoleGSAAdminServlet subject = new SwoleGSAAdminServlet(
             mockGSARepo,
             mockLogger,
             mockNucleus,

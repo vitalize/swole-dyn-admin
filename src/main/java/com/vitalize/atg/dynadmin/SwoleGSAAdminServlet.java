@@ -16,7 +16,7 @@ import java.util.Scanner;
 /**
  * Puts some helper buttons around that RQL query box
  */
-public class BestGSAAdminServletOfAllTime extends GSAAdminServlet {
+public class SwoleGSAAdminServlet extends GSAAdminServlet {
 	private transient final GSARepository repo;
 
     //The strategy used here is to sniff for the output we want to inject our stuff right before
@@ -33,7 +33,7 @@ public class BestGSAAdminServletOfAllTime extends GSAAdminServlet {
 
     //TODO: make this an external script?
     private static final String RQL_TOOLBAR_SCRIPT = new Scanner(
-            GSAAdminServlet.class.getClassLoader().getResourceAsStream("com/vitalize/atg/dynadmin/BestGSAAdminServletOfAllTime.js"),
+            GSAAdminServlet.class.getClassLoader().getResourceAsStream("com/vitalize/atg/dynadmin/SwoleGSAAdminServlet.js"),
             "UTF-8"
         )
         .useDelimiter("\\A")
@@ -42,7 +42,7 @@ public class BestGSAAdminServletOfAllTime extends GSAAdminServlet {
 
 
 
-	public BestGSAAdminServletOfAllTime(GSARepository pService, ApplicationLogging pLogger, Nucleus pNucleus, TransactionManager pTransactionManager) {
+	public SwoleGSAAdminServlet(GSARepository pService, ApplicationLogging pLogger, Nucleus pNucleus, TransactionManager pTransactionManager) {
 		super(pService, pLogger, pNucleus, pTransactionManager);
 
 		this.repo = pService;
