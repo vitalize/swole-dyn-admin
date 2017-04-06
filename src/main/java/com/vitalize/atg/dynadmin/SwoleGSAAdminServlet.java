@@ -40,6 +40,14 @@ public class SwoleGSAAdminServlet extends GSAAdminServlet {
         .next();
 
 
+    private static final String RQL_RANGE_TOOLBAR_MARKUP = new Scanner(
+        GSAAdminServlet.class.getClassLoader().getResourceAsStream("com/vitalize/atg/dynadmin/SwoleGSAAdminServletRangeBar.html"),
+        "UTF-8"
+    )
+        .useDelimiter("\\A")
+        .next();
+
+
 
 
 	public SwoleGSAAdminServlet(GSARepository pService, ApplicationLogging pLogger, Nucleus pNucleus, TransactionManager pTransactionManager) {
@@ -79,9 +87,9 @@ public class SwoleGSAAdminServlet extends GSAAdminServlet {
         o.println("<button onclick=\"rqlAdd();return false;\">Add</button>");
         o.println("<button onclick=\"rqlClear();return false;\">Clear</button>");
         o.println("<input type=\"submit\" value=\"Go\"/>");
-        o.println("<br/>");
         o.println("</div>");
 
+        o.println(RQL_RANGE_TOOLBAR_MARKUP);
 
     }
 
