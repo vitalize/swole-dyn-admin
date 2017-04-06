@@ -59,7 +59,7 @@ public class BestGSAAdminServletOfAllTime extends GSAAdminServlet {
         o.println("</div>");
 
         o.println("<div>");
-        o.println("<select id=\"RQL_ITEM_TYPE\">");
+        o.println("<select id=\"RQL_ITEM_TYPE\" style=\"width: 40%\">");
 
         for(String d : repo.getItemDescriptorNames()){
             o.println("<option>" + d + "</option>");
@@ -67,7 +67,7 @@ public class BestGSAAdminServletOfAllTime extends GSAAdminServlet {
         o.println("</select>");
 
 
-        o.println("<select id=\"RQL_ACTION_TYPE\">>");
+        o.println("<select id=\"RQL_ACTION_TYPE\" style=\"width: 20%\">");
 
         for(String action : RQL_ACTION_TYPES){
             o.println("<option>" + action + "</option>");
