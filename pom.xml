@@ -14,6 +14,20 @@
     <url>http://github.body.prod/commerce/atg-dynadmin-servlets</url>
   </scm>
 
+  <distributionManagement>
+    <repository>
+      <id>bbcom</id>
+      <name>libs-release-local</name>
+      <url>http://artifactory/libs-release-local</url>
+    </repository>
+
+    <snapshotRepository>
+      <id>bbcom</id>
+      <name>libs-snapshot-local</name>
+      <url>http://artifactory/libs-snapshot-local</url>
+    </snapshotRepository>
+  </distributionManagement>
+
   <dependencies>
     <dependency>
       <groupId>junit</groupId>
