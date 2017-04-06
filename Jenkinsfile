@@ -22,7 +22,7 @@ pipeline {
                 withMaven(globalMavenSettingsConfig: 'maven-settings') {
                     sh '''
                         mvn --show-version --errors             \
-                            --activate-profiles code-quality    \
+                            --activate-profiles code-quality use-atg-stubs    \
                             --define cpd.failOnViolation=false  \
                             --define findbugs.failOnError=false \
                             --define jacoco.haltOnFailure=false \
