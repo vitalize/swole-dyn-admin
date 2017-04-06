@@ -19,3 +19,9 @@ function rqlAdd(){
 function rqlClear() {
     document.getElementsByName('xmltext')[0].value = "";
 }
+
+
+$(document).ready(function() {
+    $("#RQL_ITEM_TYPE").select2();
+    $("#RQL_ACTION_TYPE").select2();
+});

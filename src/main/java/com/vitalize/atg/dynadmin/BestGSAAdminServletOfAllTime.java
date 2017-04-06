@@ -23,6 +23,7 @@ public class BestGSAAdminServletOfAllTime extends GSAAdminServlet {
     private static final String RQL_TEXT_AREA_MARKUP = "<p><textarea rows=\"12\" cols=\"80\" name=\"xmltext\">";
     private static final String WIDER_TALLER_RQL_TEXT_AREA_MARKUP = "<p><textarea rows=\"20\" cols=\"160\" name=\"xmltext\">";
 
+    private static final String END_OF_HEAD_MARKUP = "</head>";
 
     private static final String[] RQL_ACTION_TYPES = {
         "query-items",
@@ -110,15 +111,28 @@ public class BestGSAAdminServletOfAllTime extends GSAAdminServlet {
                 @Override
                 public void println(String s) throws IOException {
 
-                    if(RQL_TEXT_AREA_MARKUP.equals(s)){
+                    if(RQL_TEXT_AREA_MARKUP.equals(s)) {
 
                         outputRQLToolbar(pOut);
                         //While we're at it...make that a bit bigger
                         pOut.println(WIDER_TALLER_RQL_TEXT_AREA_MARKUP);
+                    } else if (END_OF_HEAD_MARKUP.equals(s)) {
+
+
+
+                        //add select2
+                        pOut.println("<link href=\"https://cdnjs.cloudflare.com/ajax/libs/select2/4.0.3/css/select2.min.css\" rel=\"stylesheet\" />");
+                        pOut.println("<script src=\"https://cdnjs.cloudflare.com/ajax/libs/select2/4.0.3/js/select2.min.js\"></script>");
+
+                        pOut.println(s);
+
                     } else {
                         //otherwise just pass it on through
                         pOut.println(s);
                     }
+
+
+
                 }
             }
         );
