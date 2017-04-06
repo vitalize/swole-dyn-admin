@@ -141,8 +141,6 @@ public class SwoleGSAAdminServletTest {
         );
 
 
-
-
         String allOutput = allOutputBuilder.toString();
 
         assertThat(
