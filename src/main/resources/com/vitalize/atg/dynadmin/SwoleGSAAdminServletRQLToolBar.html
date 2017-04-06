@@ -1,0 +1,27 @@
+<div>
+    <a href="https://docs.oracle.com/cd/E24152_01/Platform.10-1/ATGRepositoryGuide/html/s0305rqloverview01.html" target="_blank">Y U FORGET RQL?</a>
+</div>
+
+<div>
+    <select id="RQL_ITEM_TYPE" style="width: 20%">
+        $$ITEM_TYPES$$
+    </select>
+
+
+    <select id="RQL_ACTION_TYPE" style="width: 10%">
+        <option>query-items</option>
+        <option>add-item</option>
+        <option>remove-item</option>
+        <option>update-item</option>
+    </select>
+
+
+
+    <button onclick="rqlAdd();return false;">Add</button>
+    <button onclick="rqlClear();return false;">Clear</button>
+    <input type="submit" value="Go"/>");
+</div>
+
+<div id="RQL_RANGE_TOOLBAR">
+    Skipping <input type="number" id="RQL_RANGE_SKIP" value="0"/> Showing <input type="number" id="RQL_RANGE_SHOW" value="10"/>
+</div>

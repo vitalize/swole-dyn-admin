@@ -23,12 +23,6 @@ public class SwoleGSAAdminServlet extends GSAAdminServlet {
     private static final String RQL_TEXT_AREA_MARKUP = "<p><textarea rows=\"12\" cols=\"80\" name=\"xmltext\">";
     private static final String WIDER_TALLER_RQL_TEXT_AREA_MARKUP = "<p><textarea rows=\"20\" cols=\"160\" name=\"xmltext\">";
 
-    private static final String[] RQL_ACTION_TYPES = {
-        "query-items",
-        "add-item",
-        "remove-item",
-        "update-item"
-    };
 
 
     //TODO: make this an external script?
@@ -40,8 +34,8 @@ public class SwoleGSAAdminServlet extends GSAAdminServlet {
         .next();
 
 
-    private static final String RQL_RANGE_TOOLBAR_MARKUP = new Scanner(
-        GSAAdminServlet.class.getClassLoader().getResourceAsStream("com/vitalize/atg/dynadmin/SwoleGSAAdminServletRangeBar.html"),
+    private static final String RQL_TOOLBAR_MARKUP = new Scanner(
+        GSAAdminServlet.class.getClassLoader().getResourceAsStream("com/vitalize/atg/dynadmin/SwoleGSAAdminServletRQLToolBar.html"),
         "UTF-8"
     )
         .useDelimiter("\\A")
@@ -62,34 +56,14 @@ public class SwoleGSAAdminServlet extends GSAAdminServlet {
         o.println(RQL_TOOLBAR_SCRIPT);
         o.println("</script>");
 
-        o.println("<div>");
-        o.println("<a href=\"https://docs.oracle.com/cd/E24152_01/Platform.10-1/ATGRepositoryGuide/html/s0305rqloverview01.html\" target=\"_blank\">Y U FORGET RQL?</a>");
-        o.println("</div>");
-
-        o.println("<div>");
-        o.println("<select id=\"RQL_ITEM_TYPE\" style=\"width: 20%\">");
+        String itemTypeOptions = "";
 
         for(String d : repo.getItemDescriptorNames()){
-            o.println("<option>" + d + "</option>");
+            itemTypeOptions += "        <option>" + d + "</option>\n";
         }
-        o.println("</select>");
 
 
-        o.println("<select id=\"RQL_ACTION_TYPE\" style=\"width: 10%\">");
-
-        for(String action : RQL_ACTION_TYPES){
-            o.println("<option>" + action + "</option>");
-        }
-        o.println("</select>");
-
-
-
-        o.println("<button onclick=\"rqlAdd();return false;\">Add</button>");
-        o.println("<button onclick=\"rqlClear();return false;\">Clear</button>");
-        o.println("<input type=\"submit\" value=\"Go\"/>");
-        o.println("</div>");
-
-        o.println(RQL_RANGE_TOOLBAR_MARKUP);
+        o.println(RQL_TOOLBAR_MARKUP.replace("$$ITEM_TYPES$$", itemTypeOptions));
 
     }
 
