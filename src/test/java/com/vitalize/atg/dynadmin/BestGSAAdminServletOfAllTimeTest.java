@@ -145,7 +145,7 @@ public class BestGSAAdminServletOfAllTimeTest {
         verify(mockOutputStream, times(1)).println(EXPECTED_SCRIPT);
 
         //make sure we ouput the RQL help
-        verify(mockOutputStream, times(1)).println("<a href=\"https://docs.oracle.com/cd/E24152_01/Platform.10-1/ATGRepositoryGuide/html/s0305repositoryquerylanguage01.html\" target=\"_blank\">Y U FORGET RQL?</a>");
+        verify(mockOutputStream, times(1)).println("<a href=\"https://docs.oracle.com/cd/E24152_01/Platform.10-1/ATGRepositoryGuide/html/s0305rqloverview01.html\" target=\"_blank\">Y U FORGET RQL?</a>");
 
 
         verify(mockOutputStream, times(1)).println("some other content");

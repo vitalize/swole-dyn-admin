@@ -55,6 +55,9 @@ public class BestGSAAdminServletOfAllTime extends GSAAdminServlet {
         o.println(RQL_TOOLBAR_SCRIPT);
         o.println("</script>");
 
+        o.println("<div>");
+        o.println("<a href=\"https://docs.oracle.com/cd/E24152_01/Platform.10-1/ATGRepositoryGuide/html/s0305rqloverview01.html\" target=\"_blank\">Y U FORGET RQL?</a>");
+        o.println("</div>");
 
         o.println("<div>");
         o.println("<select id=\"RQL_ITEM_TYPE\">");
@@ -74,13 +77,13 @@ public class BestGSAAdminServletOfAllTime extends GSAAdminServlet {
 
 
 
-        o.println("<button onclick=\"doRQLAction();return false;\">ADD</button>");
+        o.println("<button onclick=\"rqlAdd();return false;\">Add</button>");
+        o.println("<button onclick=\"rqlClear();return false;\">Clear</button>");
+        o.println("<input type=\"submit\" value=\"Go\"/>");
         o.println("<br/>");
         o.println("</div>");
 
-        o.println("<div>");
-        o.println("<a href=\"https://docs.oracle.com/cd/E24152_01/Platform.10-1/ATGRepositoryGuide/html/s0305repositoryquerylanguage01.html\" target=\"_blank\">Y U FORGET RQL?</a>");
-        o.println("</div>");
+
     }
 
 

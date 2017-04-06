@@ -1,4 +1,4 @@
-function doRQLAction(){
+function rqlAdd(){
     var typeSelector = document.getElementById('RQL_ITEM_TYPE');
     var selectedType = typeSelector.options[typeSelector.selectedIndex].text;
 
@@ -12,5 +12,10 @@ function doRQLAction(){
     var rql = '<' + selectedAction + ' item-descriptor=\"' + selectedType + '\"' + idAttr + '>';
     rql += '</' + selectedAction + '>';
 
-    document.getElementsByName('xmltext')[0].value += rql;
+    document.getElementsByName('xmltext')[0].value += (rql + "\n");
+}
+
+
+function rqlClear() {
+    document.getElementsByName('xmltext')[0].value = "";
 }
