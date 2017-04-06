@@ -2,6 +2,7 @@
 <project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
   <modelVersion>4.0.0</modelVersion>
 
+  <groupId>com.bodybuilding</groupId>
   <artifactId>atg-dynadmin-servlets</artifactId>
   <version>0.1.1-SNAPSHOT</version>
 
@@ -13,32 +14,26 @@
     <url>http://github.body.prod/commerce/atg-dynadmin-servlets</url>
   </scm>
 
-  <parent>
-    <groupId>com.bodybuilding</groupId>
-    <artifactId>bitwise-parent</artifactId>
-    <version>1.0.1</version>
-  </parent>
+  <dependencies>
+    <dependency>
+      <groupId>junit</groupId>
+      <artifactId>junit</artifactId>
+      <version>4.12</version>
+      <scope>test</scope>
+    </dependency>
 
-  <repositories>
-    <repository>
-      <id>remote</id>
-      <name>remote-repos</name>
-      <url>http://artifactory/remote-repos</url>
-      <snapshots>
-        <enabled>false</enabled>
-      </snapshots>
-    </repository>
-    <repository>
-      <id>bbcom</id>
-      <name>bbcom-repos</name>
-      <url>http://artifactory/local-repos</url>
-      <snapshots>
-        <enabled>true</enabled>
-        <updatePolicy>always</updatePolicy>
-      </snapshots>
-    </repository>
+    <dependency>
+      <groupId>org.mockito</groupId>
+      <artifactId>mockito-core</artifactId>
+      <version>1.10.19</version>
+    </dependency>
 
-  </repositories>
+    <dependency>
+      <groupId>org.hamcrest</groupId>
+      <artifactId>hamcrest-library</artifactId>
+      <version>1.3</version>
+    </dependency>
+  </dependencies>
 
   <build>
     <defaultGoal>verify</defaultGoal>
@@ -73,17 +68,6 @@
                 <requireMavenVersion>
                   <version>3.3.9</version>
                 </requireMavenVersion>
-              </rules>
-            </configuration>
-          </execution>
-          <execution>
-            <id>enforce-no-snapshots</id>
-            <goals>
-              <goal>enforce</goal>
-            </goals>
-            <configuration>
-              <rules>
-                <requireReleaseDeps />
               </rules>
             </configuration>
           </execution>
@@ -165,23 +149,74 @@
   </build>
 
 
-
-  <dependencies>
-    <dependency>
-      <groupId>com.oracle.atg</groupId>
-      <artifactId>das</artifactId>
-      <version>10.2.3</version>
-    </dependency>
-
-    <dependency>
-      <groupId>javax.servlet</groupId>
-      <artifactId>servlet-api</artifactId>
-      <version>2.5</version>
-      <scope>provided</scope>
-    </dependency>
-  </dependencies>
-
   <profiles>
+
+    <profile>
+      <id>use-atg-stubs</id>
+      <activation>
+        <activeByDefault>true</activeByDefault>
+      </activation>
+      <dependencies>
+        <dependency>
+         <groupId>io.github.atg-stubs</groupId>
+         <artifactId>atg-stubs</artifactId>
+          <version>10.2.0-SNAPSHOT</version>
+        </dependency>
+      </dependencies>
+      <repositories>
+        <repository>
+          <id>oss-sonatype</id>
+          <url>https://oss.sonatype.org/content/repositories/snapshots/</url>
+        </repository>
+      </repositories>
+    </profile>
+
+
+    <profile>
+      <!--
+        Used when live dev'ing in an IDE to ref ACTUAL interfaces that may need to be contirbuted to ATG Stubs
+        This profile only makes sense if you have an artifactory instance over at artifactory with the matching
+        artifact id's..which you probably do not.  Open to suggestions.
+      -->
+
+      <id>use-atg-real</id>
+      <dependencies>
+        <dependency>
+          <!--TODO: change to use the naming/versioning conventions of http://www.oracle.com/technetwork/indexes/samplecode/commerce-samples-2766867.html-->
+          <groupId>com.oracle.atg</groupId>
+          <artifactId>das</artifactId>
+          <!-- this is 10.2 patch 3 in vitalize's maven repo-->
+          <version>10.2.3</version>
+        </dependency>
+
+        <dependency>
+          <groupId>javax.servlet</groupId>
+          <artifactId>servlet-api</artifactId>
+          <version>2.5</version>
+        </dependency>
+      </dependencies>
+
+      <repositories>
+        <repository>
+          <id>remote</id>
+          <name>remote-repos</name>
+          <url>http://artifactory/remote-repos</url>
+          <snapshots>
+            <enabled>false</enabled>
+          </snapshots>
+        </repository>
+        <repository>
+          <id>bbcom</id>
+          <name>bbcom-repos</name>
+          <url>http://artifactory/local-repos</url>
+          <snapshots>
+            <enabled>true</enabled>
+            <updatePolicy>always</updatePolicy>
+          </snapshots>
+        </repository>
+      </repositories>
+    </profile>
+
     <profile>
       <!-- see Jenkinsfile, this profile is skipped on the deploy stage, but used in the build stage-->
       <id>code-quality</id>
