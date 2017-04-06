@@ -8,6 +8,8 @@ import org.junit.Before;
 import org.junit.Test;
 import org.mockito.Mock;
 import org.mockito.MockitoAnnotations;
+import org.mockito.invocation.InvocationOnMock;
+import org.mockito.stubbing.Answer;
 
 import javax.servlet.ServletException;
 import javax.servlet.ServletOutputStream;
@@ -99,6 +101,17 @@ public class SwoleGSAAdminServletTest {
             "cats"
         };
 
+        final StringBuilder allOutputBuilder = new StringBuilder();
+
+        doAnswer(
+            new Answer<Object>() {
+                public Object answer(InvocationOnMock invocation) throws Throwable {
+                    allOutputBuilder.append(invocation.getArguments()[0]);
+                    return null;
+                }
+            }
+        ).when(mockOutputStream).println(anyString());
+
         when(mockGSARepo.getItemDescriptorNames())
             .thenReturn(descriptors);
 
@@ -127,12 +140,22 @@ public class SwoleGSAAdminServletTest {
             mockOutputStream
         );
 
-        //Make sure the better rql box is output
-        verify(mockOutputStream, times(1)).println("<p><textarea rows=\"20\" cols=\"160\" name=\"xmltext\">");
+
+
+
+        String allOutput = allOutputBuilder.toString();
+
+        assertThat(
+            allOutput,
+            containsString("<p><textarea rows=\"20\" cols=\"160\" name=\"xmltext\">")
+        );
+
 
         for(String d: descriptors) {
-            //make sure all the descriptors are out there
-            verify(mockOutputStream, times(1)).println("<option>" + d + "</option>");
+            assertThat(
+                allOutput,
+                containsString("<option>" + d + "</option>")
+            );
         }
 
         assertThat(
@@ -142,13 +165,20 @@ public class SwoleGSAAdminServletTest {
             )
         );
 
-        verify(mockOutputStream, times(1)).println(EXPECTED_SCRIPT);
+        assertThat(
+            allOutput,
+            containsString(EXPECTED_SCRIPT)
+        );
 
-        //make sure we ouput the RQL help
-        verify(mockOutputStream, times(1)).println("<a href=\"https://docs.oracle.com/cd/E24152_01/Platform.10-1/ATGRepositoryGuide/html/s0305rqloverview01.html\" target=\"_blank\">Y U FORGET RQL?</a>");
+
+        assertThat(
+            allOutput,
+            containsString("<a href=\"https://docs.oracle.com/cd/E24152_01/Platform.10-1/ATGRepositoryGuide/html/s0305rqloverview01.html\" target=\"_blank\">Y U FORGET RQL?</a>")
+        );
 
 
         verify(mockOutputStream, times(1)).println("some other content");
+
     }
 
 
