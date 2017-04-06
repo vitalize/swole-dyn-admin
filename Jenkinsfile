@@ -21,7 +21,7 @@ pipeline {
 
                 withMaven(globalMavenSettingsConfig: 'maven-settings') {
                     sh '''
-                        mvn --show-version --errors             \
+                        mvn -U --show-version --errors             \
                             --activate-profiles code-quality,use-atg-stubs    \
                             --define cpd.failOnViolation=false  \
                             --define findbugs.failOnError=false \
