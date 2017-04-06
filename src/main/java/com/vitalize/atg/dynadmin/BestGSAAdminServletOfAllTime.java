@@ -118,7 +118,8 @@ public class BestGSAAdminServletOfAllTime extends GSAAdminServlet {
                         pOut.println(WIDER_TALLER_RQL_TEXT_AREA_MARKUP);
                     } else if (END_OF_HEAD_MARKUP.equals(s)) {
 
-
+                        //add jquery
+                        pOut.println("<script src=\"https://code.jquery.com/jquery-1.12.4.min.js\" integrity=\"sha256-ZosEbRLbNQzLpnKIkEdrPv7lOy9C27hHQ+Xp8a4MxAQ=\" crossorigin=\"anonymous\"></script>");
 
                         //add select2
                         pOut.println("<link href=\"https://cdnjs.cloudflare.com/ajax/libs/select2/4.0.3/css/select2.min.css\" rel=\"stylesheet\" />");
