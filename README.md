@@ -17,7 +17,7 @@ The jar contains a bunch of extensions to common ATG nucleus classes.  Drop prop
 
 For example suppose you have a GSARepository at /atg/commerce/catalog/ProductCatalog then all you need to do is add swole-dyn-admin.jar to your module's MANIFEST.MF ATG-Class-Path: and drop a /atg/commerce/catalog/ProductCatalog.properties file with the following contents:
 ```
-$class=com.vitalize.atg.adapter.gsa.EasyAdminGSARepository
+$class=com.vitalize.atg.adapter.gsa.SwoleGSARepository
 ```
 
 
