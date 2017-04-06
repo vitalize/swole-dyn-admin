@@ -23,8 +23,6 @@ public class BestGSAAdminServletOfAllTime extends GSAAdminServlet {
     private static final String RQL_TEXT_AREA_MARKUP = "<p><textarea rows=\"12\" cols=\"80\" name=\"xmltext\">";
     private static final String WIDER_TALLER_RQL_TEXT_AREA_MARKUP = "<p><textarea rows=\"20\" cols=\"160\" name=\"xmltext\">";
 
-    private static final String END_OF_HEAD_MARKUP = "</head>";
-
     private static final String[] RQL_ACTION_TYPES = {
         "query-items",
         "add-item",
@@ -90,46 +88,36 @@ public class BestGSAAdminServletOfAllTime extends GSAAdminServlet {
 
     /**
      * Overrides the printAdmin and injects and RQL toolbar above the RQL box. Also makes the RQL box a little bigger by default.
-     * @param pRequest
-     * @param pResponse
-     * @param pOut
+     * @param req
+     * @param res
+     * @param out
      * @throws ServletException
      * @throws IOException
      */
 	@Override
 	protected void printAdmin(
-	    HttpServletRequest pRequest,
-        HttpServletResponse pResponse,
-        final ServletOutputStream pOut
+	    HttpServletRequest req,
+        HttpServletResponse res,
+        final ServletOutputStream out
     ) throws ServletException, IOException {
 
 		printAdminInternal(
-		    pRequest,
-            pResponse,
-            new DelegatingServletOutputStream(pOut){
+            req,
+            res,
+            new DelegatingServletOutputStream(out){
 
                 @Override
                 public void println(String s) throws IOException {
 
                     if(RQL_TEXT_AREA_MARKUP.equals(s)) {
 
-                        outputRQLToolbar(pOut);
+                        outputRQLToolbar(out);
                         //While we're at it...make that a bit bigger
-                        pOut.println(WIDER_TALLER_RQL_TEXT_AREA_MARKUP);
-                    } else if (END_OF_HEAD_MARKUP.equals(s)) {
-
-                        //add jquery
-                        pOut.println("<script src=\"https://code.jquery.com/jquery-1.12.4.min.js\" integrity=\"sha256-ZosEbRLbNQzLpnKIkEdrPv7lOy9C27hHQ+Xp8a4MxAQ=\" crossorigin=\"anonymous\"></script>");
-
-                        //add select2
-                        pOut.println("<link href=\"https://cdnjs.cloudflare.com/ajax/libs/select2/4.0.3/css/select2.min.css\" rel=\"stylesheet\" />");
-                        pOut.println("<script src=\"https://cdnjs.cloudflare.com/ajax/libs/select2/4.0.3/js/select2.min.js\"></script>");
-
-                        pOut.println(s);
+                        out.println(WIDER_TALLER_RQL_TEXT_AREA_MARKUP);
 
                     } else {
                         //otherwise just pass it on through
-                        pOut.println(s);
+                        out.println(s);
                     }
 
 
@@ -140,25 +128,45 @@ public class BestGSAAdminServletOfAllTime extends GSAAdminServlet {
 	}
 
 
+
     /**
      * This is just here for testing so we can mock up the super interface
-     * @param pRequest
-     * @param pResponse
-     * @param pOut
+     * @param req
+     * @param res
+     * @param out
      * @throws ServletException
      * @throws IOException
      */
     protected void printAdminInternal(
-        HttpServletRequest pRequest,
-        HttpServletResponse pResponse,
-        ServletOutputStream pOut
+        HttpServletRequest req,
+        HttpServletResponse res,
+        ServletOutputStream out
     ) throws ServletException, IOException {
 
         super.printAdmin(
-            pRequest,
-            pResponse,
-            pOut
+            req,
+            res,
+            out
         );
+    }
+
+
+
+    @Override
+    protected void insertStyle(
+        HttpServletRequest req,
+        HttpServletResponse res,
+        ServletOutputStream out
+    ) throws ServletException, IOException {
+        //add jquery
+        out.println("<script src=\"https://code.jquery.com/jquery-1.12.4.min.js\" integrity=\"sha256-ZosEbRLbNQzLpnKIkEdrPv7lOy9C27hHQ+Xp8a4MxAQ=\" crossorigin=\"anonymous\"></script>");
+
+        //add select2
+        out.println("<link href=\"https://cdnjs.cloudflare.com/ajax/libs/select2/4.0.3/css/select2.min.css\" rel=\"stylesheet\" />");
+        out.println("<script src=\"https://cdnjs.cloudflare.com/ajax/libs/select2/4.0.3/js/select2.min.js\"></script>");
+
+
+        super.insertStyle(req, res, out);
     }
 
 
