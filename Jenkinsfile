@@ -57,11 +57,12 @@ pipeline {
             when {
                 branch 'master'
 
+                /*
                 expression {
                     // a snapshot or not already tagged
                     def project = readMavenPom()
                     project.version.endsWith('-SNAPSHOT') || !sh(returnStdout: true, script: "git tag --list ${project.version} || exit 0")
-                }
+                }*/
             }
 
             steps {
