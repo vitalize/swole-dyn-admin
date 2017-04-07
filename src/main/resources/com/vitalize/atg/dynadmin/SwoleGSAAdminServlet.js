@@ -35,9 +35,8 @@ function rqlClear() {
 
 $(document).ready(function() {
     var data = [];
-    var i = 0;
     for(var n in itemDescriptors){
-        data.push({ id : i++, text : n})
+        data.push({ id : n, text : n})
     }
 
     $("#RQL_ITEM_TYPE").select2({
@@ -73,12 +72,11 @@ $(document).ready(function() {
             var data = [];
 
             if(itemDescriptor){
-                var i = 0;
                 for(var n in itemDescriptor.props){
-                    data.push({ id : i++, text : n})
+                    data.push({ id : n, text : n})
                 }
             }
-            $("#RQL_ORDER_BY_FIELD").select2({
+            $("#RQL_ORDER_BY_FIELD").empty().select2({
                 data : data
             });
 

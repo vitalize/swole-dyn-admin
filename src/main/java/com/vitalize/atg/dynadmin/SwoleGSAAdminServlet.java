@@ -184,6 +184,8 @@ public class SwoleGSAAdminServlet extends GSAAdminServlet {
         out.println("<link href=\"https://cdnjs.cloudflare.com/ajax/libs/select2/4.0.3/css/select2.min.css\" rel=\"stylesheet\" />");
         out.println("<script src=\"https://cdnjs.cloudflare.com/ajax/libs/select2/4.0.3/js/select2.min.js\"></script>");
 
+        //add fontawesome
+        out.println("<link href=\"https://maxcdn.bootstrapcdn.com/font-awesome/4.7.0/css/font-awesome.min.css\" rel=\"stylesheet\" />");
 
         super.insertStyle(req, res, out);
     }
