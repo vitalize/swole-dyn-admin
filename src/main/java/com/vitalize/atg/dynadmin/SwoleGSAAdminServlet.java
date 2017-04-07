@@ -72,15 +72,23 @@ public class SwoleGSAAdminServlet extends GSAAdminServlet {
 
             //only output non error descriptors
             if(descriptor != null){
-                o.println("itemDescriptors['" + n + "'] = {\n" );
+                o.println("itemDescriptors['" + n + "'] = {" );
 
-                o.println("\tprops : {\n" );
+                o.println("\tprops : {" );
+                boolean firstProp = true;
                 for(DynamicPropertyDescriptor property : descriptor.getPropertyDescriptors()){
-                    o.println("\t\t'" + property.getName() + "' : {}\n");
+
+                    if(firstProp){
+                        o.println("\t\t'" + property.getName() + "' : {}");
+                    } else {
+                        o.println("\t\t,'" + property.getName() + "' : {}");
+                    }
+
                 }
+
                 o.println("\t}");
 
-                o.println("};\n" );
+                o.println("};" );
             }
 
         }

@@ -170,7 +170,7 @@ public class SwoleGSAAdminServletTest {
 
 
         for(String d: descriptors) {
-            verify(mockOutputStream, times(1)).println("itemDescriptors['" + d + "'] = {\n");
+            verify(mockOutputStream, times(1)).println("itemDescriptors['" + d + "'] = {");
 
         }
 
