@@ -3,9 +3,9 @@ package com.vitalize.atg.dynadmin;
 import atg.adapter.gsa.GSAAdminServlet;
 import atg.adapter.gsa.GSARepository;
 import atg.beans.DynamicPropertyDescriptor;
-import atg.core.exception.ContainerException;
 import atg.nucleus.Nucleus;
 import atg.nucleus.logging.ApplicationLogging;
+import atg.repository.RepositoryException;
 import atg.repository.RepositoryItemDescriptor;
 
 import javax.servlet.ServletException;
@@ -66,7 +66,7 @@ public class SwoleGSAAdminServlet extends GSAAdminServlet {
 
             try {
                 descriptor = repo.getItemDescriptor(n);
-            } catch (ContainerException.RepositoryException e){
+            } catch (RepositoryException e){
                 //TODO: log a warning (ATG stubs doesn't have logging signatures yet
             }
 
