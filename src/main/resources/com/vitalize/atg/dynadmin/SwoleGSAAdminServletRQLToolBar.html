@@ -3,9 +3,7 @@
 </div>
 
 <div>
-    <select id="RQL_ITEM_TYPE" style="width: 20%">
-        $$ITEM_TYPES$$
-    </select>
+    <select id="RQL_ITEM_TYPE" style="width: 20%"></select>
 
 
     <select id="RQL_ACTION_TYPE" style="width: 10%">
@@ -22,6 +20,16 @@
     <input type="submit" value="Go"/>
 </div>
 
-<div id="RQL_RANGE_TOOLBAR">
-    Skipping <input type="number" id="RQL_RANGE_SKIP" value="0"/> Showing <input type="number" id="RQL_RANGE_SHOW" value="10"/>
+<div id="RQL_ORDER_BY_TOOLBAR">
+    <input type="checkbox" id="RQL_ORDER_BY_ENABLED">
+    Order By <select id="RQL_ORDER_BY_FIELD"></select>
+    Sort <select id="RQL_ORDER_BY_DIRECTION">
+        <option value="ASC">Ascending</option>
+        <option value="DESC">Descending</option>
+    </select>
 </div>
+
+<div id="RQL_RANGE_TOOLBAR">
+    <input type="checkbox" checked="checked" id="RQL_RANGE_ENABLED"> Skipping <input type="number" id="RQL_RANGE_SKIP" value="0"/> Showing <input type="number" id="RQL_RANGE_SHOW" value="10"/>
+</div>
+

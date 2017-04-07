@@ -2,8 +2,11 @@ package com.vitalize.atg.dynadmin;
 
 import atg.adapter.gsa.GSAAdminServlet;
 import atg.adapter.gsa.GSARepository;
+import atg.beans.DynamicPropertyDescriptor;
+import atg.core.exception.ContainerException;
 import atg.nucleus.Nucleus;
 import atg.nucleus.logging.ApplicationLogging;
+import atg.repository.RepositoryItemDescriptor;
 
 import javax.servlet.ServletException;
 import javax.servlet.ServletOutputStream;
@@ -53,17 +56,41 @@ public class SwoleGSAAdminServlet extends GSAAdminServlet {
     private void outputRQLToolbar(ServletOutputStream o) throws IOException {
 
         o.println("<script>");
+
+        //Output a itemDescriptor taxonomy for the toolbars to use
+        o.println("var itemDescriptors = {};");
+
+        for(String n : repo.getItemDescriptorNames()){
+
+            RepositoryItemDescriptor descriptor = null;
+
+            try {
+                descriptor = repo.getItemDescriptor(n);
+            } catch (ContainerException.RepositoryException e){
+                //TODO: log a warning (ATG stubs doesn't have logging signatures yet
+            }
+
+            //only output non error descriptors
+            if(descriptor != null){
+                o.println("itemDescriptors['" + n + "'] = {\n" );
+
+                o.println("\tprops : {\n" );
+                for(DynamicPropertyDescriptor property : descriptor.getPropertyDescriptors()){
+                    o.println("\t\t'" + property.getName() + "' : {}\n");
+                }
+                o.println("\t}");
+
+                o.println("};\n" );
+            }
+
+        }
+
         o.println(RQL_TOOLBAR_SCRIPT);
         o.println("</script>");
 
-        String itemTypeOptions = "";
-
-        for(String d : repo.getItemDescriptorNames()){
-            itemTypeOptions += "        <option>" + d + "</option>\n";
-        }
 
 
-        o.println(RQL_TOOLBAR_MARKUP.replace("$$ITEM_TYPES$$", itemTypeOptions));
+        o.println(RQL_TOOLBAR_MARKUP);
 
     }
 

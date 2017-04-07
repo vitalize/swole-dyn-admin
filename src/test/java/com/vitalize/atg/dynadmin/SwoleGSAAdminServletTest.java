@@ -2,8 +2,14 @@ package com.vitalize.atg.dynadmin;
 
 import atg.adapter.gsa.GSAAdminServlet;
 import atg.adapter.gsa.GSARepository;
+import atg.beans.DynamicBeanDescriptor;
+import atg.beans.DynamicBeanInfo;
+import atg.beans.DynamicPropertyDescriptor;
+import atg.core.exception.ContainerException;
 import atg.nucleus.Nucleus;
 import atg.nucleus.logging.ApplicationLogging;
+import atg.repository.Repository;
+import atg.repository.RepositoryItemDescriptor;
 import org.junit.Before;
 import org.junit.Test;
 import org.mockito.Mock;
@@ -17,6 +23,8 @@ import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import javax.transaction.TransactionManager;
 import java.io.IOException;
+import java.util.Dictionary;
+import java.util.HashMap;
 import java.util.Scanner;
 
 import static org.junit.Assert.*;
@@ -94,7 +102,7 @@ public class SwoleGSAAdminServletTest {
 
 
     @Test
-    public void testPrintAdminRQLBoxPresent() throws ServletException, IOException {
+    public void testPrintAdminRQLBoxPresent() throws ServletException, IOException, ContainerException.RepositoryException {
 
         String[] descriptors = new String[]{
             "dogs",
@@ -114,6 +122,17 @@ public class SwoleGSAAdminServletTest {
 
         when(mockGSARepo.getItemDescriptorNames())
             .thenReturn(descriptors);
+
+        RepositoryItemDescriptor fakeCatsProp = new FakeRepositoryItemDescriptor("cats");
+        when(mockGSARepo.getItemDescriptor("cats"))
+            .thenReturn(fakeCatsProp);
+
+
+        RepositoryItemDescriptor fakeDogsProp = new FakeRepositoryItemDescriptor("dogs");
+        when(mockGSARepo.getItemDescriptor("dogs"))
+            .thenReturn(fakeDogsProp);
+
+
 
         SwoleGSAAdminServlet subject = new SwoleGSAAdminServlet(
             mockGSARepo,
@@ -150,10 +169,8 @@ public class SwoleGSAAdminServletTest {
 
 
         for(String d: descriptors) {
-            assertThat(
-                allOutput,
-                containsString("<option>" + d + "</option>")
-            );
+            verify(mockOutputStream, times(1)).println("itemDescriptors['" + d + "'] = {\n");
+
         }
 
         assertThat(
@@ -180,5 +197,57 @@ public class SwoleGSAAdminServletTest {
     }
 
 
+
+    class FakeRepositoryItemDescriptor implements RepositoryItemDescriptor {
+
+        private final String name;
+        private final HashMap<String, DynamicPropertyDescriptor> descriptors = new HashMap<String, DynamicPropertyDescriptor>();
+
+        public FakeRepositoryItemDescriptor(String name, DynamicPropertyDescriptor... descriptors){
+            this.name = name;
+            for(DynamicPropertyDescriptor d : descriptors){
+                this.descriptors.put(d.getName(), d);
+            }
+        }
+
+
+        public String getItemDescriptorName() {
+            return name;
+        }
+
+
+        public DynamicPropertyDescriptor[] getPropertyDescriptors() {
+            return descriptors.values().toArray(new DynamicPropertyDescriptor[]{});
+        }
+
+        public boolean hasProperty(String s) {
+            return descriptors.containsKey(s);
+        }
+
+        public String[] getPropertyNames() {
+            return descriptors.keySet().toArray(new String[]{});
+        }
+
+        public DynamicPropertyDescriptor getPropertyDescriptor(String s) {
+            return descriptors.get(s);
+        }
+
+        //Begin non-implemented things
+        public DynamicBeanDescriptor getBeanDescriptor() {
+            return null;
+        }
+
+        public Repository getRepository() {
+            return null;
+        }
+
+        public boolean isInstance(Object o) {
+            return false;
+        }
+
+        public boolean areInstances(DynamicBeanInfo dynamicBeanInfo) {
+            return false;
+        }
+    }
 
 }

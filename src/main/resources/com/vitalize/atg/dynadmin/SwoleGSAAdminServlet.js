@@ -14,7 +14,12 @@ function rqlAdd(){
     var rql = '<' + selectedAction + ' item-descriptor=\"' + selectedType + '\"' + idAttr + '>';
 
     if(selectedAction == RQL_ACTION_TYPE_QUERY_ITEMS){
-        rql += "ALL RANGE " + $("#RQL_RANGE_SKIP").val() + "+" + $("#RQL_RANGE_SHOW").val();
+        rql += "ALL";
+
+        if($('#RQL_RANGE_ENABLED').prop('checked')) {
+            rql += " RANGE " + $("#RQL_RANGE_SKIP").val() + "+" + $("#RQL_RANGE_SHOW").val();
+        }
+
     }
 
     rql += '</' + selectedAction + '>';
@@ -29,7 +34,16 @@ function rqlClear() {
 
 
 $(document).ready(function() {
-    $("#RQL_ITEM_TYPE").select2();
+    var data = [];
+    for(var n in itemDescriptors){
+        data.push({ text : n})
+    }
+
+    $("#RQL_ITEM_TYPE").select2({
+        data : data
+    });
+
+
     $("#RQL_ACTION_TYPE").select2();
 
     $("#RQL_ACTION_TYPE").change(
