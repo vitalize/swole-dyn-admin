@@ -9,6 +9,7 @@ import atg.core.exception.ContainerException;
 import atg.nucleus.Nucleus;
 import atg.nucleus.logging.ApplicationLogging;
 import atg.repository.Repository;
+import atg.repository.RepositoryException;
 import atg.repository.RepositoryItemDescriptor;
 import org.junit.Before;
 import org.junit.Test;
@@ -102,7 +103,7 @@ public class SwoleGSAAdminServletTest {
 
 
     @Test
-    public void testPrintAdminRQLBoxPresent() throws ServletException, IOException, ContainerException.RepositoryException {
+    public void testPrintAdminRQLBoxPresent() throws ServletException, IOException, RepositoryException {
 
         String[] descriptors = new String[]{
             "dogs",
