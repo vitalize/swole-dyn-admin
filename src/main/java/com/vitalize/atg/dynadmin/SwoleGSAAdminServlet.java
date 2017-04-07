@@ -80,6 +80,8 @@ public class SwoleGSAAdminServlet extends GSAAdminServlet {
 
                     if(firstProp){
                         o.println("\t\t'" + property.getName() + "' : {}");
+                        firstProp = false;
+
                     } else {
                         o.println("\t\t,'" + property.getName() + "' : {}");
                     }
