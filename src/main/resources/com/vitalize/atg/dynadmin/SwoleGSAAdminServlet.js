@@ -86,4 +86,7 @@ $(document).ready(function() {
     );
 
 
+    $("#RQL_ITEM_TYPE").trigger("change");
+
+
 });
