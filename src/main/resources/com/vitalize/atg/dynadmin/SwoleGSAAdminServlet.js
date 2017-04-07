@@ -35,8 +35,9 @@ function rqlClear() {
 
 $(document).ready(function() {
     var data = [];
+    var i = 0;
     for(var n in itemDescriptors){
-        data.push({ text : n})
+        data.push({ id : i++, text : n})
     }
 
     $("#RQL_ITEM_TYPE").select2({
@@ -51,12 +52,36 @@ $(document).ready(function() {
             var val = $(this).val();
 
             var rangeToolbar = $("#RQL_RANGE_TOOLBAR");
+            var orderByToolbar = $("#RQL_ORDER_BY_TOOLBAR");
 
             if(val == RQL_ACTION_TYPE_QUERY_ITEMS){
                 rangeToolbar.show();
+                orderByToolbar.show();
             } else {
                 rangeToolbar.hide();
+                orderByToolbar.hide();
             }
+        }
+    );
+
+
+    $("#RQL_ITEM_TYPE").change(
+        function(){
+            var val = $(this).val();
+            var itemDescriptor = itemDescriptors[val];
+
+            var data = [];
+
+            if(itemDescriptor){
+                var i = 0;
+                for(var n in itemDescriptor.props){
+                    data.push({ id : i++, text : n})
+                }
+            }
+            $("#RQL_ORDER_BY_FIELD").select2({
+                data : data
+            });
+
         }
     );
 
