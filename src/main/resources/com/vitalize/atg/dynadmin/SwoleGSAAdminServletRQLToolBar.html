@@ -12,17 +12,17 @@ function rqlAdd(){
     var selectedAction = $("#RQL_ACTION_TYPE").val();
 
     //add,remove,update all have an id="" attribute...but query does not
-    var idAttr = selectedAction == RQL_ACTION_TYPE_QUERY_ITEMS ? '' : ' id=\"\"';
+    var idAttr = selectedAction === RQL_ACTION_TYPE_QUERY_ITEMS ? '' : ' id=\"\"';
 
     var rql = '<' + selectedAction + ' item-descriptor=\"' + selectedType + '\"' + idAttr + '>';
 
-    if(selectedAction == RQL_ACTION_TYPE_QUERY_ITEMS){
+    if(selectedAction === RQL_ACTION_TYPE_QUERY_ITEMS){
         rql += "ALL";
 
         if($('#RQL_ORDER_BY_ENABLED').prop('checked')) {
             rql += " ORDER BY " + $("#RQL_ORDER_BY_FIELD").val();
 
-            if($('#RQL_ORDER_BY_DIRECTION').val() == "DESC") {
+            if($('#RQL_ORDER_BY_DIRECTION').val() === "DESC") {
                 rql +=  " SORT DESC";
             }
 
@@ -35,7 +35,7 @@ function rqlAdd(){
             rql += " RANGE " + $("#RQL_RANGE_SKIP").val() + "+" + $("#RQL_RANGE_SHOW").val();
         }
 
-    } else if(selectedAction == RQL_ACTION_TYPE_ADD_ITEM){
+    } else if(selectedAction === RQL_ACTION_TYPE_ADD_ITEM){
         var itemDescriptor = itemDescriptors[val];
 
 
@@ -47,11 +47,11 @@ function rqlAdd(){
                 var p = itemDescriptor.props[n];
                 if(!p.derived && !p.queryable){
                     var defaultVal = p.default;
-                    if(defaultVal == 'null'){
-                        defaultVal == '__NULL__'
+                    if(defaultVal === 'null'){
+                        defaultVal = '__NULL__'
                     }
 
-                    rql += '  <set-property name="' + n + '"><![CDATA[' +  defaultVal + ']]></set-property>\n'';
+                    rql += '  <set-property name="' + n + '"><![CDATA[' +  defaultVal + ']]></set-property>\n';
 
                 }
             }
@@ -71,14 +71,7 @@ function rqlClear() {
 
 
 $(document).ready(function() {
-    var data = [];
-    for(var n in itemDescriptors){
-        data.push({ id : n, text : n})
-    }
 
-    $("#RQL_ITEM_TYPE").select2({
-        data : data
-    });
 
 
     $("#RQL_ACTION_TYPE").select2();
@@ -90,7 +83,7 @@ $(document).ready(function() {
             var rangeToolbar = $("#RQL_RANGE_TOOLBAR");
             var orderByToolbar = $("#RQL_ORDER_BY_TOOLBAR");
 
-            if(val == RQL_ACTION_TYPE_QUERY_ITEMS){
+            if(val === RQL_ACTION_TYPE_QUERY_ITEMS){
                 rangeToolbar.show();
                 orderByToolbar.show();
             } else {
@@ -100,6 +93,15 @@ $(document).ready(function() {
         }
     );
 
+
+    var data = [];
+    for(var n in itemDescriptors){
+        data.push({ id : n, text : n})
+    }
+
+    $("#RQL_ITEM_TYPE").select2({
+        data : data
+    });
 
     $("#RQL_ITEM_TYPE").change(
         function(){
