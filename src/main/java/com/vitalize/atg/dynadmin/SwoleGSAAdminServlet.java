@@ -8,6 +8,7 @@ import atg.nucleus.Nucleus;
 import atg.nucleus.logging.ApplicationLogging;
 import atg.repository.RepositoryException;
 import atg.repository.RepositoryItemDescriptor;
+import atg.repository.RepositoryPropertyDescriptor;
 
 import javax.servlet.ServletException;
 import javax.servlet.ServletOutputStream;
@@ -81,8 +82,8 @@ public class SwoleGSAAdminServlet extends GSAAdminServlet {
 
                     o.println("'" + property.getName() + "' : {");
 
-                    if(property instanceof GSAPropertyDescriptor){
-                        GSAPropertyDescriptor gsaProp = (GSAPropertyDescriptor)property;
+                    if(property instanceof RepositoryPropertyDescriptor){
+                        RepositoryPropertyDescriptor gsaProp = (RepositoryPropertyDescriptor)property;
 
                         o.println("\t\t\tdefault : '" + gsaProp.getDefaultValueString() + "'");
                     }

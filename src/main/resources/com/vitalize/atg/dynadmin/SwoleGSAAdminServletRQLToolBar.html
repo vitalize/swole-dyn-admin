@@ -22,10 +22,12 @@ function rqlAdd(){
             rql += " ORDER BY " + $("#RQL_ORDER_BY_FIELD").val();
 
             if($('#RQL_ORDER_BY_DIRECTION').val() == "DESC") {
-                rql +=  " DESC";
+                rql +=  " SORT DESC";
             }
 
-
+            if($('#RQL_ORDER_BY_IGNORE_CASE').prop('checked')) {
+                rql +=  " CASE IGNORECASE";
+            }
         }
 
         if($('#RQL_RANGE_ENABLED').prop('checked')) {
@@ -131,6 +133,7 @@ $(document).ready(function() {
         <option value="ASC">Ascending</option>
         <option value="DESC">Descending</option>
     </select>
+    Ignore Case <input id="RQL_ORDER_BY_IGNORE_CASE">
 </div>
 
 <div id="RQL_RANGE_TOOLBAR">
