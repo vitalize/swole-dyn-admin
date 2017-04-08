@@ -71,14 +71,15 @@ public class SwoleGSAAdminServlet extends GSAAdminServlet {
 
                 o.println("\tprops : {" );
                 boolean firstProp = true;
+
                 for(DynamicPropertyDescriptor property : descriptor.getPropertyDescriptors()){
                     o.print("\t\t");
+
                     if(!firstProp){
                         o.print(",");
-                        firstProp = false;
-
                     }
 
+                    firstProp = false;
 
                     o.println("'" + property.getName() + "' : {");
 
