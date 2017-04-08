@@ -28,15 +28,6 @@ public class SwoleGSAAdminServlet extends GSAAdminServlet {
 
 
 
-    //TODO: make this an external script?
-    private static final String RQL_TOOLBAR_SCRIPT = new Scanner(
-            GSAAdminServlet.class.getClassLoader().getResourceAsStream("com/vitalize/atg/dynadmin/SwoleGSAAdminServlet.js"),
-            "UTF-8"
-        )
-        .useDelimiter("\\A")
-        .next();
-
-
     private static final String RQL_TOOLBAR_MARKUP = new Scanner(
         GSAAdminServlet.class.getClassLoader().getResourceAsStream("com/vitalize/atg/dynadmin/SwoleGSAAdminServletRQLToolBar.html"),
         "UTF-8"
@@ -95,7 +86,6 @@ public class SwoleGSAAdminServlet extends GSAAdminServlet {
 
         }
 
-        o.println(RQL_TOOLBAR_SCRIPT);
         o.println("</script>");
 
 

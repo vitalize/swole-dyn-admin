@@ -35,8 +35,8 @@ import static org.mockito.Mockito.*;
 
 public class SwoleGSAAdminServletTest {
 
-    static String EXPECTED_SCRIPT = new Scanner(
-            GSAAdminServlet.class.getClassLoader().getResourceAsStream("com/vitalize/atg/dynadmin/SwoleGSAAdminServlet.js"),
+    static String EXPECTED_MARKUP = new Scanner(
+            GSAAdminServlet.class.getClassLoader().getResourceAsStream("com/vitalize/atg/dynadmin/SwoleGSAAdminServletRQLToolBar.html"),
             "UTF-8"
         )
         .useDelimiter("\\A")
@@ -175,7 +175,7 @@ public class SwoleGSAAdminServletTest {
         }
 
         assertThat(
-            EXPECTED_SCRIPT,
+            EXPECTED_MARKUP,
             not(
                 isEmptyOrNullString()
             )
@@ -183,7 +183,7 @@ public class SwoleGSAAdminServletTest {
 
         assertThat(
             allOutput,
-            containsString(EXPECTED_SCRIPT)
+            containsString(EXPECTED_MARKUP)
         );
 
 
