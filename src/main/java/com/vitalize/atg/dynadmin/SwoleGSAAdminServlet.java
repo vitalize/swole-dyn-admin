@@ -1,6 +1,7 @@
 package com.vitalize.atg.dynadmin;
 
 import atg.adapter.gsa.GSAAdminServlet;
+import atg.adapter.gsa.GSAPropertyDescriptor;
 import atg.adapter.gsa.GSARepository;
 import atg.beans.DynamicPropertyDescriptor;
 import atg.nucleus.Nucleus;
@@ -56,7 +57,9 @@ public class SwoleGSAAdminServlet extends GSAAdminServlet {
             RepositoryItemDescriptor descriptor = null;
 
             try {
+
                 descriptor = repo.getItemDescriptor(n);
+
             } catch (RepositoryException e){
                 //TODO: log a warning (ATG stubs doesn't have logging signatures yet
             }
@@ -68,14 +71,23 @@ public class SwoleGSAAdminServlet extends GSAAdminServlet {
                 o.println("\tprops : {" );
                 boolean firstProp = true;
                 for(DynamicPropertyDescriptor property : descriptor.getPropertyDescriptors()){
-
+                    o.print("\t\t");
                     if(firstProp){
-                        o.println("\t\t'" + property.getName() + "' : {}");
+                        o.print(",");
                         firstProp = false;
 
-                    } else {
-                        o.println("\t\t,'" + property.getName() + "' : {}");
                     }
+
+
+                    o.println("'" + property.getName() + "' : {");
+
+                    if(property instanceof GSAPropertyDescriptor){
+                        GSAPropertyDescriptor gsaProp = (GSAPropertyDescriptor)property;
+
+                        o.println("\t\t\tdefault : '" + gsaProp.getDefaultValueString() + "'");
+                    }
+
+                    o.println("\t\t}");
 
                 }
 

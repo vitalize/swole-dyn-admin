@@ -1,15 +1,35 @@
 package com.vitalize.atg.adapter.gsa;
 
+import atg.nucleus.Nucleus;
 import com.vitalize.atg.dynadmin.SwoleGSAAdminServlet;
 import org.junit.Test;
+
+import javax.transaction.TransactionManager;
+
 import static org.junit.Assert.*;
+import static org.mockito.Mockito.*;
 
 public class SwoleGSARepositoryTest {
 
     @Test
     public void testCreateAdminServlet(){
 
-        SwoleGSARepository subject = new SwoleGSARepository();
+        final Nucleus fakeNucleus = new Nucleus();
+
+        final TransactionManager fakeTxMgr = mock(TransactionManager.class);
+
+        SwoleGSARepository subject = new SwoleGSARepository(){
+
+            @Override
+            public Nucleus getNucleus() {
+                return fakeNucleus;
+            }
+
+            @Override
+            public TransactionManager getTransactionManager() {
+                return fakeTxMgr;
+            }
+        };
 
         javax.servlet.Servlet actual = subject.createAdminServlet();
 
