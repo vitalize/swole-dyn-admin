@@ -1,6 +1,7 @@
 <script>
 
 var RQL_ACTION_TYPE_QUERY_ITEMS = "query-items";
+var RQL_ACTION_TYPE_ADD_ITEM = "add-item";
 
 function rqlAdd(){
     var typeSelector = document.getElementById('RQL_ITEM_TYPE');
@@ -34,6 +35,28 @@ function rqlAdd(){
             rql += " RANGE " + $("#RQL_RANGE_SKIP").val() + "+" + $("#RQL_RANGE_SHOW").val();
         }
 
+    } else if(selectedAction == RQL_ACTION_TYPE_ADD_ITEM){
+        var itemDescriptor = itemDescriptors[val];
+
+
+
+        if(itemDescriptor){
+            rql += '\n';
+
+            for(var n in itemDescriptor.props){
+                var p = itemDescriptor.props[n];
+                if(!p.derived && !p.queryable){
+                    var defaultVal = p.default;
+                    if(defaultVal == 'null'){
+                        defaultVal == '__NULL__'
+                    }
+
+                    rql += '  <set-property name="' + n + '"><![CDATA[' +  defaultVal + ']]></set-property>\n'';
+
+                }
+            }
+        }
+
     }
 
     rql += '</' + selectedAction + '>';
@@ -61,40 +84,40 @@ $(document).ready(function() {
     $("#RQL_ACTION_TYPE").select2();
 
     $("#RQL_ACTION_TYPE").change(
-            function(){
-                var val = $(this).val();
+        function(){
+            var val = $(this).val();
 
-                var rangeToolbar = $("#RQL_RANGE_TOOLBAR");
-                var orderByToolbar = $("#RQL_ORDER_BY_TOOLBAR");
+            var rangeToolbar = $("#RQL_RANGE_TOOLBAR");
+            var orderByToolbar = $("#RQL_ORDER_BY_TOOLBAR");
 
-                if(val == RQL_ACTION_TYPE_QUERY_ITEMS){
-                    rangeToolbar.show();
-                    orderByToolbar.show();
-                } else {
-                    rangeToolbar.hide();
-                    orderByToolbar.hide();
-                }
+            if(val == RQL_ACTION_TYPE_QUERY_ITEMS){
+                rangeToolbar.show();
+                orderByToolbar.show();
+            } else {
+                rangeToolbar.hide();
+                orderByToolbar.hide();
             }
+        }
     );
 
 
     $("#RQL_ITEM_TYPE").change(
-            function(){
-                var val = $(this).val();
-                var itemDescriptor = itemDescriptors[val];
+        function(){
+            var val = $(this).val();
+            var itemDescriptor = itemDescriptors[val];
 
-                var data = [];
+            var data = [];
 
-                if(itemDescriptor){
-                    for(var n in itemDescriptor.props){
-                        data.push({ id : n, text : n})
-                    }
+            if(itemDescriptor){
+                for(var n in itemDescriptor.props){
+                    data.push({ id : n, text : n})
                 }
-                $("#RQL_ORDER_BY_FIELD").empty().select2({
-                    data : data
-                });
-
             }
+            $("#RQL_ORDER_BY_FIELD").empty().select2({
+                data : data
+            });
+
+        }
     );
 
 
@@ -133,7 +156,7 @@ $(document).ready(function() {
         <option value="ASC">Ascending</option>
         <option value="DESC">Descending</option>
     </select>
-    Ignore Case <input id="RQL_ORDER_BY_IGNORE_CASE">
+    Ignore Case <input type="checkbox" id="RQL_ORDER_BY_IGNORE_CASE">
 </div>
 
 <div id="RQL_RANGE_TOOLBAR">

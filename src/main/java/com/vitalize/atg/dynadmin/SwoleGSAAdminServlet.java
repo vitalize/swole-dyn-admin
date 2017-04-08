@@ -84,9 +84,11 @@ public class SwoleGSAAdminServlet extends GSAAdminServlet {
                     o.println("'" + property.getName() + "' : {");
 
                     if(property instanceof RepositoryPropertyDescriptor){
-                        RepositoryPropertyDescriptor gsaProp = (RepositoryPropertyDescriptor)property;
+                        RepositoryPropertyDescriptor repoProp = (RepositoryPropertyDescriptor)property;
 
-                        o.println("\t\t\tdefault : '" + gsaProp.getDefaultValueString() + "'");
+                        o.println("\t\t\tqueryable : " + repoProp.isQueryable() + ",");
+                        o.println("\t\t\tderived : " + repoProp.isDerived() + ",");
+                        o.println("\t\t\tdefault : '" + repoProp.getDefaultValueString() + "'");
                     }
 
                     o.println("\t\t}");
