@@ -188,8 +188,6 @@ public class SwoleGSAAdminServlet extends GSAAdminServlet {
 
                         if("query-items".equals(ele.getTagName()) && ele.hasAttribute("item-descriptor")){
                             queries.add(new Query(ele.getTextContent(), ele.getAttribute("item-descriptor")));
-                            out.println(i + ": " + ele.getTextContent());
-
                         }
                     }
 
