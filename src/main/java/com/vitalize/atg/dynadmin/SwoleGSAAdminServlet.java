@@ -16,6 +16,7 @@ import org.xml.sax.SAXException;
 import javax.servlet.ServletException;
 import javax.servlet.ServletOutputStream;
 import javax.servlet.http.HttpServletRequest;
+import javax.servlet.http.HttpServletRequestWrapper;
 import javax.servlet.http.HttpServletResponse;
 import javax.transaction.TransactionManager;
 import javax.xml.parsers.DocumentBuilder;
@@ -23,6 +24,7 @@ import javax.xml.parsers.DocumentBuilderFactory;
 import javax.xml.parsers.ParserConfigurationException;
 import java.io.ByteArrayInputStream;
 import java.io.IOException;
+import java.net.URLEncoder;
 import java.util.*;
 
 /**
@@ -139,7 +141,7 @@ public class SwoleGSAAdminServlet extends GSAAdminServlet {
      */
 	@Override
 	protected void printAdmin(
-	    HttpServletRequest req,
+	    final HttpServletRequest req,
         HttpServletResponse res,
         final ServletOutputStream out
     ) throws ServletException, IOException {
@@ -149,6 +151,18 @@ public class SwoleGSAAdminServlet extends GSAAdminServlet {
 	    final Queue<Query> queries = new LinkedList<Query>();
 
         String incomingQuery = req.getParameter("xmltext");
+
+
+        //see if there's a query in the QSPs
+        if(incomingQuery == null){
+            String itemTypeQSP = req.getParameter("item-type");
+            String rqlQueryQSP = req.getParameter("rql-query");
+
+            if(itemTypeQSP != null && rqlQueryQSP != null){
+                incomingQuery = "<query-items item-descriptor=\"" + itemTypeQSP + "\">" + rqlQueryQSP + "</query-items>";
+            }
+        }
+
         if(incomingQuery != null){
 
             DocumentBuilderFactory dbFactory = DocumentBuilderFactory.newInstance();
@@ -184,11 +198,22 @@ public class SwoleGSAAdminServlet extends GSAAdminServlet {
             }
         }
 
+        final String overriddenXMLTextParam = incomingQuery;
 
 
 
 		printAdminInternal(
-            req,
+            new HttpServletRequestWrapper(req){
+
+                @Override
+                public String getParameter(String name) {
+                    //We override the getting of xml text in case it came in as QSP
+                    if("xmltext".equals(name)){
+                        return overriddenXMLTextParam;
+                    }
+                    return super.getParameter(name);
+                }
+            },
             res,
             new DelegatingServletOutputStream(out){
 
@@ -230,7 +255,7 @@ public class SwoleGSAAdminServlet extends GSAAdminServlet {
                                 sb.append(l);
                             } else if(l.contains(queryToMatch.rql)){
                                 //it's in this line
-                                sb.append(l.replace(queryToMatch.rql, "<a href=\"" + queryToMatch.itemType + "\">" + queryToMatch.rql + "</a>"));
+                                sb.append(l.replace(queryToMatch.rql, "<a href=\"" + req.getPathInfo() + "?item-type=" + URLEncoder.encode(queryToMatch.itemType, "UTF-8") + "&rql-query=" + URLEncoder.encode(queryToMatch.rql, "UTF-8") + "\">" + queryToMatch.rql + "</a>"));
                                 //start looking for the next query
 
                                 //last time through this will be empty

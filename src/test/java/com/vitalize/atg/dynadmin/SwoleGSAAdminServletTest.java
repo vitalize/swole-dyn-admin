@@ -27,6 +27,7 @@ import java.io.IOException;
 import java.util.Dictionary;
 import java.util.HashMap;
 import java.util.Scanner;
+import java.util.UUID;
 
 import static org.junit.Assert.*;
 import static org.hamcrest.Matchers.*;
@@ -198,7 +199,468 @@ public class SwoleGSAAdminServletTest {
     }
 
 
+    @Test
+    public void testLinkToQueriesNoXMLRequest() throws ServletException, IOException, RepositoryException {
 
+
+        final StringBuilder allOutputBuilder = new StringBuilder();
+
+        doAnswer(
+            new Answer<Object>() {
+                public Object answer(InvocationOnMock invocation) throws Throwable {
+                    allOutputBuilder.append(invocation.getArguments()[0]);
+                    return null;
+                }
+            }
+        ).when(mockOutputStream).println(anyString());
+
+        when(mockGSARepo.getItemDescriptorNames())
+            .thenReturn(new String[0]);
+
+
+
+        SwoleGSAAdminServlet subject = new SwoleGSAAdminServlet(
+            mockGSARepo,
+            mockLogger,
+            mockNucleus,
+            mockTxManager
+        ){
+            //This is a bit tricky to test because we are relying on the stubs impl for super class
+            //but that doesn't actually do anything...anyone have a better idea?
+            @Override
+            protected void printAdminInternal(HttpServletRequest req, HttpServletResponse res, ServletOutputStream out) throws ServletException, IOException {
+                out.println("<set-property\n<set-property");
+            }
+        };
+
+
+        subject.printAdmin(
+            mockRequest,
+            mockResponse,
+            mockOutputStream
+        );
+
+
+        String allOutput = allOutputBuilder.toString();
+
+        assertThat(
+            allOutput,
+            containsString("<set-property\n<set-property")
+        );
+
+    }
+
+    static final String PRECODE_MARKUP_ENTER = "<pre><code>";
+    static final String PRECODE_MARKUP_EXIT = "</code></pre><p>";
+
+    @Test
+    public void testLinkToQueriesEnsureOnlyPreCodeStuffIsMatched() throws ServletException, IOException, RepositoryException {
+
+
+        final StringBuilder allOutputBuilder = new StringBuilder();
+
+        doAnswer(
+            new Answer<Object>() {
+                public Object answer(InvocationOnMock invocation) throws Throwable {
+                    allOutputBuilder.append(invocation.getArguments()[0]);
+                    return null;
+                }
+            }
+        ).when(mockOutputStream).println(anyString());
+
+        when(mockGSARepo.getItemDescriptorNames())
+            .thenReturn(new String[0]);
+
+
+
+        SwoleGSAAdminServlet subject = new SwoleGSAAdminServlet(
+            mockGSARepo,
+            mockLogger,
+            mockNucleus,
+            mockTxManager
+        ){
+            //This is a bit tricky to test because we are relying on the stubs impl for super class
+            //but that doesn't actually do anything...anyone have a better idea?
+            @Override
+            protected void printAdminInternal(HttpServletRequest req, HttpServletResponse res, ServletOutputStream out) throws ServletException, IOException {
+                //Once before
+                out.println("before ALL RANGE 0+10 before");
+
+                //Once during
+                out.println(PRECODE_MARKUP_ENTER);
+                out.println("during ALL RANGE 0+10 during");
+
+                //Once after
+                out.println(PRECODE_MARKUP_EXIT);
+                out.println("after ALL RANGE 0+10 after");
+
+            }
+        };
+
+        when(mockRequest.getParameter("xmltext"))
+            .thenReturn("<query-items item-descriptor=\"dog\">ALL RANGE 0+10</query-items>");
+
+        String fakePathInfo = "/path/to/stuff";
+        when(mockRequest.getPathInfo())
+            .thenReturn(fakePathInfo);
+
+        subject.printAdmin(
+            mockRequest,
+            mockResponse,
+            mockOutputStream
+        );
+
+
+        String allOutput = allOutputBuilder.toString();
+
+        assertThat(
+            "text before must NOT have been altered",
+            allOutput,
+            containsString("before ALL RANGE 0+10 before")
+        );
+
+
+        assertThat(
+            "text after must NOT have been altered",
+            allOutput,
+            containsString("after ALL RANGE 0+10 after")
+        );
+
+
+        assertThat(
+            "text during must have been altered",
+            allOutput,
+            not(containsString("during ALL RANGE 0+10 during"))
+        );
+
+
+        assertThat(
+            "text during must have been altered",
+            allOutput,
+            containsString("during <a href=\"" + fakePathInfo + "?item-type=dog&rql-query=ALL+RANGE+0%2B10\">ALL RANGE 0+10</a> during")
+        );
+
+    }
+
+
+
+    @Test
+    public void testQueryQSPsAreRespected() throws ServletException, IOException, RepositoryException {
+
+
+        SwoleGSAAdminServlet subject = new SwoleGSAAdminServlet(
+            mockGSARepo,
+            mockLogger,
+            mockNucleus,
+            mockTxManager
+        ){
+            //This is a bit tricky to test because we are relying on the stubs impl for super class
+            //but that doesn't actually do anything...anyone have a better idea?
+            @Override
+            protected void printAdminInternal(HttpServletRequest req, HttpServletResponse res, ServletOutputStream out) throws ServletException, IOException {
+
+                assertEquals(
+                    "xmltext must be simulated from QSP params",
+                    "<query-items item-descriptor=\"dog\">ALL RANGE 1+10</query-items>",
+                    req.getParameter("xmltext")
+                );
+            }
+        };
+
+
+        when(mockRequest.getParameter("item-type"))
+            .thenReturn("dog");
+
+        when(mockRequest.getParameter("rql-query"))
+            .thenReturn("ALL RANGE 1+10");
+
+        subject.printAdmin(
+            mockRequest,
+            mockResponse,
+            mockOutputStream
+        );
+
+
+    }
+
+    @Test
+    public void testQueryQSPsAreIgnoredIfItemTypeIsMissing() throws ServletException, IOException, RepositoryException {
+
+
+        SwoleGSAAdminServlet subject = new SwoleGSAAdminServlet(
+            mockGSARepo,
+            mockLogger,
+            mockNucleus,
+            mockTxManager
+        ){
+            //This is a bit tricky to test because we are relying on the stubs impl for super class
+            //but that doesn't actually do anything...anyone have a better idea?
+            @Override
+            protected void printAdminInternal(HttpServletRequest req, HttpServletResponse res, ServletOutputStream out) throws ServletException, IOException {
+                assertNull(
+                    "xmltext must not be simulated if item-type not present",
+                    req.getParameter("xmltext")
+                );
+
+            }
+        };
+
+
+
+        when(mockRequest.getParameter("rql-query"))
+            .thenReturn("ALL RANGE 1+10");
+
+        subject.printAdmin(
+            mockRequest,
+            mockResponse,
+            mockOutputStream
+        );
+
+
+    }
+
+
+    @Test
+    public void testQueryQSPsAreIgnoredIfRqlQueryIsMissing() throws ServletException, IOException, RepositoryException {
+
+
+        SwoleGSAAdminServlet subject = new SwoleGSAAdminServlet(
+            mockGSARepo,
+            mockLogger,
+            mockNucleus,
+            mockTxManager
+        ){
+            //This is a bit tricky to test because we are relying on the stubs impl for super class
+            //but that doesn't actually do anything...anyone have a better idea?
+            @Override
+            protected void printAdminInternal(HttpServletRequest req, HttpServletResponse res, ServletOutputStream out) throws ServletException, IOException {
+                assertNull(
+                    "xmltext must not be simulated if rql-query not present",
+                    req.getParameter("xmltext")
+                );
+
+            }
+        };
+
+
+        when(mockRequest.getParameter("item-type"))
+            .thenReturn("dog");
+
+
+        subject.printAdmin(
+            mockRequest,
+            mockResponse,
+            mockOutputStream
+        );
+
+
+    }
+
+
+    @Test
+    public void testQueryQSPsAreIgnoredIfBothParamsAreMissing() throws ServletException, IOException, RepositoryException {
+
+
+        SwoleGSAAdminServlet subject = new SwoleGSAAdminServlet(
+            mockGSARepo,
+            mockLogger,
+            mockNucleus,
+            mockTxManager
+        ){
+            //This is a bit tricky to test because we are relying on the stubs impl for super class
+            //but that doesn't actually do anything...anyone have a better idea?
+            @Override
+            protected void printAdminInternal(HttpServletRequest req, HttpServletResponse res, ServletOutputStream out) throws ServletException, IOException {
+                assertNull(
+                    "xmltext must not be simulated if item-type nad rql-query are not present",
+                    req.getParameter("xmltext")
+                );
+
+            }
+        };
+
+
+        subject.printAdmin(
+            mockRequest,
+            mockResponse,
+            mockOutputStream
+        );
+
+
+    }
+
+
+    @Test
+    public void testQueryQSPsAreIgnoredIfXmlTextParamPresent() throws ServletException, IOException, RepositoryException {
+
+
+        SwoleGSAAdminServlet subject = new SwoleGSAAdminServlet(
+            mockGSARepo,
+            mockLogger,
+            mockNucleus,
+            mockTxManager
+        ){
+            //This is a bit tricky to test because we are relying on the stubs impl for super class
+            //but that doesn't actually do anything...anyone have a better idea?
+            @Override
+            protected void printAdminInternal(HttpServletRequest req, HttpServletResponse res, ServletOutputStream out) throws ServletException, IOException {
+                assertEquals(
+                    "xmltext must pass through when present",
+                    "<query-items item-descriptor=\"cat\">ALL RANGE 10+20</query-items>",
+                    req.getParameter("xmltext")
+                );
+
+            }
+        };
+
+        when(mockRequest.getParameter("xmltext"))
+            .thenReturn("<query-items item-descriptor=\"cat\">ALL RANGE 10+20</query-items>");
+
+
+        when(mockRequest.getParameter("item-type"))
+            .thenReturn("dog");
+
+        when(mockRequest.getParameter("rql-query"))
+            .thenReturn("ALL RANGE 1+10");
+
+        subject.printAdmin(
+            mockRequest,
+            mockResponse,
+            mockOutputStream
+        );
+
+
+    }
+
+
+
+    @Test
+    public void testLinkToQueriesEnsurePropertieValuesAreNotMatched() throws ServletException, IOException, RepositoryException {
+
+
+        final StringBuilder allOutputBuilder = new StringBuilder();
+
+        doAnswer(
+            new Answer<Object>() {
+                public Object answer(InvocationOnMock invocation) throws Throwable {
+                    allOutputBuilder.append(invocation.getArguments()[0]);
+                    return null;
+                }
+            }
+        ).when(mockOutputStream).println(anyString());
+
+        when(mockGSARepo.getItemDescriptorNames())
+            .thenReturn(new String[0]);
+
+
+
+        SwoleGSAAdminServlet subject = new SwoleGSAAdminServlet(
+            mockGSARepo,
+            mockLogger,
+            mockNucleus,
+            mockTxManager
+        ){
+            //This is a bit tricky to test because we are relying on the stubs impl for super class
+            //but that doesn't actually do anything...anyone have a better idea?
+            @Override
+            protected void printAdminInternal(HttpServletRequest req, HttpServletResponse res, ServletOutputStream out) throws ServletException, IOException {
+
+                out.println(PRECODE_MARKUP_ENTER);
+
+                out.println("<set-property name=\"seoTags\"><![CDATA[ALL RANGE 0+10]]></set-property>");
+                out.println("<!-- export is false   <set-property name=\"version\"><![CDATA[ALL RANGE 0+10]]></set-property>  -->");
+
+                out.println(PRECODE_MARKUP_EXIT);
+
+            }
+        };
+
+        when(mockRequest.getParameter("xmltext"))
+            .thenReturn("<query-items item-descriptor=\"dog\">ALL RANGE 0+10</query-items>");
+
+        subject.printAdmin(
+            mockRequest,
+            mockResponse,
+            mockOutputStream
+        );
+
+
+        String allOutput = allOutputBuilder.toString();
+
+
+        assertThat(
+            "matching property text after must NOT have been altered",
+            allOutput,
+            containsString("<set-property name=\"seoTags\"><![CDATA[ALL RANGE 0+10]]></set-property>")
+        );
+
+
+        assertThat(
+            "matching property text before must NOT have been altered",
+            allOutput,
+            containsString("<!-- export is false   <set-property name=\"version\"><![CDATA[ALL RANGE 0+10]]></set-property>  -->")
+        );
+
+
+    }
+
+
+    @Test
+    public void testLinkToQueriesRQLInProperty() throws ServletException, IOException, RepositoryException {
+
+
+        final StringBuilder allOutputBuilder = new StringBuilder();
+
+        doAnswer(
+            new Answer<Object>() {
+                public Object answer(InvocationOnMock invocation) throws Throwable {
+                    allOutputBuilder.append(invocation.getArguments()[0]);
+                    return null;
+                }
+            }
+        ).when(mockOutputStream).println(anyString());
+
+        when(mockGSARepo.getItemDescriptorNames())
+            .thenReturn(new String[0]);
+
+
+        final String someText = UUID.randomUUID().toString();
+
+
+        SwoleGSAAdminServlet subject = new SwoleGSAAdminServlet(
+            mockGSARepo,
+            mockLogger,
+            mockNucleus,
+            mockTxManager
+        ){
+            //This is a bit tricky to test because we are relying on the stubs impl for super class
+            //but that doesn't actually do anything...anyone have a better idea?
+            @Override
+            protected void printAdminInternal(HttpServletRequest req, HttpServletResponse res, ServletOutputStream out) throws ServletException, IOException {
+                out.println(someText);
+
+            }
+        };
+
+        when(mockRequest.getParameter("xmltext"))
+            .thenReturn("<dog>i'm not valid xml </car>");
+
+        subject.printAdmin(
+            mockRequest,
+            mockResponse,
+            mockOutputStream
+        );
+
+
+        String allOutput = allOutputBuilder.toString();
+
+        assertThat(
+            "invalid xml/rql should not stop output from happening",
+            allOutput,
+            containsString(someText)
+        );
+
+    }
 
 
 
