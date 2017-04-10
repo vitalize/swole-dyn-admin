@@ -208,7 +208,7 @@ public class SwoleGSAAdminServlet extends GSAAdminServlet {
 
 
 		printAdminInternal(
-            req,
+            new HttpServletRequestWrapper(req),
             res,
             new DelegatingServletOutputStream(out){
 
