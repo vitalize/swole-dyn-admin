@@ -12,6 +12,7 @@ import atg.repository.Repository;
 import atg.repository.RepositoryException;
 import atg.repository.RepositoryItemDescriptor;
 import org.junit.Before;
+import org.junit.Ignore;
 import org.junit.Test;
 import org.mockito.Mock;
 import org.mockito.MockitoAnnotations;
@@ -344,6 +345,7 @@ public class SwoleGSAAdminServletTest {
 
 
 
+    @Ignore
     @Test
     public void testQueryQSPsAreRespected() throws ServletException, IOException, RepositoryException {
 

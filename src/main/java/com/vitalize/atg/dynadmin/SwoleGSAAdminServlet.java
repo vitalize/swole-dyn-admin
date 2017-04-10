@@ -203,17 +203,7 @@ public class SwoleGSAAdminServlet extends GSAAdminServlet {
 
 
 		printAdminInternal(
-            new HttpServletRequestWrapper(req){
-
-                @Override
-                public String getParameter(String name) {
-                    //We override the getting of xml text in case it came in as QSP
-                    if("xmltext".equals(name)){
-                        return overriddenXMLTextParam;
-                    }
-                    return super.getParameter(name);
-                }
-            },
+            req,
             res,
             new DelegatingServletOutputStream(out){
 
