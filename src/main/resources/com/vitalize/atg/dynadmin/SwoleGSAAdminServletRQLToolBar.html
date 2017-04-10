@@ -45,7 +45,7 @@ function rqlAdd(){
 
             for(var n in itemDescriptor.props){
                 var p = itemDescriptor.props[n];
-                if(!p.derived && !p.queryable){
+                if(!p.derived){
                     var defaultVal = p.default;
                     if(defaultVal === 'null'){
                         defaultVal = '__NULL__'
