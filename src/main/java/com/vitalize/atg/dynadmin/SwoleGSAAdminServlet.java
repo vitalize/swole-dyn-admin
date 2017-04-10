@@ -9,6 +9,7 @@ import atg.repository.RepositoryException;
 import atg.repository.RepositoryItemDescriptor;
 import atg.repository.RepositoryPropertyDescriptor;
 import org.w3c.dom.Document;
+import org.w3c.dom.Element;
 import org.w3c.dom.NodeList;
 import org.xml.sax.SAXException;
 
@@ -153,9 +154,20 @@ public class SwoleGSAAdminServlet extends GSAAdminServlet {
 
                 doc.normalizeDocument();
 
-                NodeList queryNodes = doc.getElementsByTagName("query-items");
-                for(int i = 0; i < queryNodes.getLength(); i++){
-                    queries.add(queryNodes.item(0).getTextContent());
+
+                NodeList childNodes = doc.getDocumentElement().getChildNodes();
+
+                for(int i = 0; i < childNodes.getLength(); i++){
+                    org.w3c.dom.Node child = childNodes.item(0);
+                    if(child instanceof Element){
+
+                        if("query-items".equals(((Element) child).getTagName())){
+                            queries.add(child.getTextContent());
+                            out.println(i + ": " + child.getTextContent());
+
+                        }
+                    }
+
                 }
 
 
@@ -165,6 +177,8 @@ public class SwoleGSAAdminServlet extends GSAAdminServlet {
 
             }
         }
+
+
 
 
 		printAdminInternal(
