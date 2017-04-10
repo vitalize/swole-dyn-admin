@@ -14,7 +14,7 @@ public class SwoleGSARepositoryTest {
     @Test
     public void testCreateAdminServlet(){
 
-        final Nucleus fakeNucleus = new Nucleus();
+        final Nucleus fakeNucleus = new Nucleus(null);
 
         final TransactionManager fakeTxMgr = mock(TransactionManager.class);
 

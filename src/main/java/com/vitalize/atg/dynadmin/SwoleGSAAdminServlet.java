@@ -1,7 +1,6 @@
 package com.vitalize.atg.dynadmin;
 
 import atg.adapter.gsa.GSAAdminServlet;
-import atg.adapter.gsa.GSAPropertyDescriptor;
 import atg.adapter.gsa.GSARepository;
 import atg.beans.DynamicPropertyDescriptor;
 import atg.nucleus.Nucleus;
@@ -26,7 +25,7 @@ public class SwoleGSAAdminServlet extends GSAAdminServlet {
 
     //The strategy used here is to sniff for the output we want to inject our stuff right before
     private static final String RQL_TEXT_AREA_MARKUP = "<p><textarea rows=\"12\" cols=\"80\" name=\"xmltext\">";
-    private static final String WIDER_TALLER_RQL_TEXT_AREA_MARKUP = "<p><textarea rows=\"20\" cols=\"160\" name=\"xmltext\">";
+    private static final String RQL_TEXT_AREA_MARKUP_BIGGER = "<p><textarea rows=\"20\" style=\"width: 100%\" name=\"xmltext\">";
 
 
 
@@ -138,7 +137,7 @@ public class SwoleGSAAdminServlet extends GSAAdminServlet {
 
                         outputRQLToolbar(out);
                         //While we're at it...make that a bit bigger
-                        out.println(WIDER_TALLER_RQL_TEXT_AREA_MARKUP);
+                        out.println(RQL_TEXT_AREA_MARKUP_BIGGER);
 
                     } else {
                         //otherwise just pass it on through

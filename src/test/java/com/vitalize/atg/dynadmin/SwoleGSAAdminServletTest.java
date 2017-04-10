@@ -165,7 +165,7 @@ public class SwoleGSAAdminServletTest {
 
         assertThat(
             allOutput,
-            containsString("<p><textarea rows=\"20\" cols=\"160\" name=\"xmltext\">")
+            containsString("<p><textarea rows=\"20\" style=\"width: 100%\" name=\"xmltext\">")
         );
 
 
