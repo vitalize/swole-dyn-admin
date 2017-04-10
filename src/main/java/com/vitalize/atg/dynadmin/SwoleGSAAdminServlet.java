@@ -8,13 +8,23 @@ import atg.nucleus.logging.ApplicationLogging;
 import atg.repository.RepositoryException;
 import atg.repository.RepositoryItemDescriptor;
 import atg.repository.RepositoryPropertyDescriptor;
+import org.w3c.dom.Document;
+import org.w3c.dom.NodeList;
+import org.xml.sax.SAXException;
 
 import javax.servlet.ServletException;
 import javax.servlet.ServletOutputStream;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import javax.transaction.TransactionManager;
+import javax.xml.parsers.DocumentBuilder;
+import javax.xml.parsers.DocumentBuilderFactory;
+import javax.xml.parsers.ParserConfigurationException;
+import java.io.ByteArrayInputStream;
 import java.io.IOException;
+import java.util.ArrayList;
+import java.util.HashSet;
+import java.util.List;
 import java.util.Scanner;
 
 /**
@@ -110,6 +120,9 @@ public class SwoleGSAAdminServlet extends GSAAdminServlet {
     }
 
 
+
+
+
     /**
      * Overrides the printAdmin and injects and RQL toolbar above the RQL box. Also makes the RQL box a little bigger by default.
      * @param req
@@ -125,10 +138,41 @@ public class SwoleGSAAdminServlet extends GSAAdminServlet {
         final ServletOutputStream out
     ) throws ServletException, IOException {
 
+
+	    //We use a hash set incase they have duplicate queries for some reason
+	    final HashSet<String> queries = new HashSet<String>();
+
+        String incomingQuery = req.getParameter("xmltext");
+        if(incomingQuery != null){
+
+            DocumentBuilderFactory dbFactory = DocumentBuilderFactory.newInstance();
+            DocumentBuilder dBuilder = null;
+            try {
+                dBuilder = dbFactory.newDocumentBuilder();
+                Document doc = dBuilder.parse(new ByteArrayInputStream(("<?xml version=\"1.0\" encoding=\"UTF-8\" ?><x>" + incomingQuery + "</x>").getBytes("UTF-8")));
+
+                doc.normalizeDocument();
+
+                NodeList queryNodes = doc.getElementsByTagName("query-items");
+                for(int i = 0; i < queryNodes.getLength(); i++){
+                    queries.add(queryNodes.item(0).getTextContent());
+                }
+
+
+            } catch (ParserConfigurationException e) {
+
+            } catch (SAXException e) {
+
+            }
+        }
+
+
 		printAdminInternal(
             req,
             res,
             new DelegatingServletOutputStream(out){
+
+                private boolean inPreCodeBlock = false;
 
                 @Override
                 public void println(String s) throws IOException {
@@ -137,13 +181,21 @@ public class SwoleGSAAdminServlet extends GSAAdminServlet {
 
                         outputRQLToolbar(out);
                         //While we're at it...make that a bit bigger
-                        out.println(RQL_TEXT_AREA_MARKUP_BIGGER);
+                        s = RQL_TEXT_AREA_MARKUP_BIGGER;
 
-                    } else {
-                        //otherwise just pass it on through
-                        out.println(s);
+                    } else if("<pre><code>".equals(s)){
+                        inPreCodeBlock = true;
+                    } else if("</code></pre><p>".equals(s)){
+                        inPreCodeBlock = false;
+                    } else if(inPreCodeBlock){
+
+                        for(String q : queries){
+                            s = s.replace(q, "<a href=\"\">" + q + "</a>");
+                        }
+
                     }
 
+                    out.println(s);
 
 
                 }
