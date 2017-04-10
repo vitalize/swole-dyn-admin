@@ -88,6 +88,11 @@ public class SwoleGSAAdminServletTest {
                 //instead of calling super pretend i did
                 pOut.println("not the text we care about");
             }
+
+            @Override
+            protected String formatServiceName(String serviceName, HttpServletRequest req) {
+                return "";
+            }
         };
 
 
@@ -152,6 +157,11 @@ public class SwoleGSAAdminServletTest {
                 out.println("<p><textarea rows=\"12\" cols=\"80\" name=\"xmltext\">");
 
                 out.println("some other content");
+            }
+
+            @Override
+            protected String formatServiceName(String serviceName, HttpServletRequest req) {
+                return "";
             }
         };
 
@@ -232,6 +242,11 @@ public class SwoleGSAAdminServletTest {
             protected void printAdminInternal(HttpServletRequest req, HttpServletResponse res, ServletOutputStream out) throws ServletException, IOException {
                 out.println("<set-property\n<set-property");
             }
+
+            @Override
+            protected String formatServiceName(String serviceName, HttpServletRequest req) {
+                return "";
+            }
         };
 
 
@@ -296,6 +311,11 @@ public class SwoleGSAAdminServletTest {
                 out.println("after ALL RANGE 0+10 after");
 
             }
+
+            @Override
+            protected String formatServiceName(String serviceName, HttpServletRequest req) {
+                return "/path/to/component/service";
+            }
         };
 
         when(mockRequest.getParameter("xmltext"))
@@ -338,7 +358,7 @@ public class SwoleGSAAdminServletTest {
         assertThat(
             "text during must have been altered",
             allOutput,
-            containsString("during <a href=\"" + fakePathInfo + "?item-type=dog&rql-query=ALL+RANGE+0%2B10\">ALL RANGE 0+10</a> during")
+            containsString("during <a href=\"" + "/path/to/component/service" + "?item-type=dog&rql-query=ALL+RANGE+0%2B10\">ALL RANGE 0+10</a> during")
         );
 
     }
@@ -405,6 +425,11 @@ public class SwoleGSAAdminServletTest {
                 );
 
             }
+
+            @Override
+            protected String formatServiceName(String serviceName, HttpServletRequest req) {
+                return "";
+            }
         };
 
 
@@ -441,6 +466,11 @@ public class SwoleGSAAdminServletTest {
                     req.getParameter("xmltext")
                 );
 
+            }
+
+            @Override
+            protected String formatServiceName(String serviceName, HttpServletRequest req) {
+                return "";
             }
         };
 
@@ -479,6 +509,11 @@ public class SwoleGSAAdminServletTest {
                 );
 
             }
+
+            @Override
+            protected String formatServiceName(String serviceName, HttpServletRequest req) {
+                return "";
+            }
         };
 
 
@@ -512,6 +547,11 @@ public class SwoleGSAAdminServletTest {
                     req.getParameter("xmltext")
                 );
 
+            }
+
+            @Override
+            protected String formatServiceName(String serviceName, HttpServletRequest req) {
+                return "";
             }
         };
 
@@ -575,6 +615,11 @@ public class SwoleGSAAdminServletTest {
                 out.println(PRECODE_MARKUP_EXIT);
 
             }
+
+            @Override
+            protected String formatServiceName(String serviceName, HttpServletRequest req) {
+                return "";
+            }
         };
 
         when(mockRequest.getParameter("xmltext"))
@@ -635,6 +680,11 @@ public class SwoleGSAAdminServletTest {
             mockNucleus,
             mockTxManager
         ){
+            @Override
+            protected String formatServiceName(String serviceName, HttpServletRequest req) {
+                return "";
+            }
+
             //This is a bit tricky to test because we are relying on the stubs impl for super class
             //but that doesn't actually do anything...anyone have a better idea?
             @Override

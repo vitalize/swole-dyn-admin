@@ -49,10 +49,15 @@ public class SwoleGSAAdminServlet extends GSAAdminServlet {
 
 
 
-	public SwoleGSAAdminServlet(GSARepository pService, ApplicationLogging pLogger, Nucleus pNucleus, TransactionManager pTransactionManager) {
-		super(pService, pLogger, pNucleus, pTransactionManager);
+	public SwoleGSAAdminServlet(
+	    GSARepository service,
+        ApplicationLogging logger,
+        Nucleus nucleus,
+        TransactionManager txManager
+    ) {
+		super(service, logger, nucleus, txManager);
 
-		this.repo = pService;
+		this.repo = service;
 	}
 
     private void outputRQLToolbar(ServletOutputStream o) throws IOException {
@@ -200,6 +205,8 @@ public class SwoleGSAAdminServlet extends GSAAdminServlet {
 
         final String overriddenXMLTextParam = incomingQuery;
 
+        //TODO: Is it safe to assume the path is = service name?
+        final String pathToThisComponent = this.formatServiceName(req.getPathInfo(), req);
 
 
 		printAdminInternal(
@@ -245,7 +252,7 @@ public class SwoleGSAAdminServlet extends GSAAdminServlet {
                                 sb.append(l);
                             } else if(l.contains(queryToMatch.rql)){
                                 //it's in this line
-                                sb.append(l.replace(queryToMatch.rql, "<a href=\"" + req.getPathInfo() + "?item-type=" + URLEncoder.encode(queryToMatch.itemType, "UTF-8") + "&rql-query=" + URLEncoder.encode(queryToMatch.rql, "UTF-8") + "\">" + queryToMatch.rql + "</a>"));
+                                sb.append(l.replace(queryToMatch.rql, "<a href=\"" + pathToThisComponent + "?item-type=" + URLEncoder.encode(queryToMatch.itemType, "UTF-8") + "&rql-query=" + URLEncoder.encode(queryToMatch.rql, "UTF-8") + "\">" + queryToMatch.rql + "</a>"));
                                 //start looking for the next query
 
                                 //last time through this will be empty
