@@ -23,10 +23,7 @@ import javax.xml.parsers.DocumentBuilderFactory;
 import javax.xml.parsers.ParserConfigurationException;
 import java.io.ByteArrayInputStream;
 import java.io.IOException;
-import java.util.ArrayList;
-import java.util.HashSet;
-import java.util.List;
-import java.util.Scanner;
+import java.util.*;
 
 /**
  * Puts some helper buttons around that RQL query box
@@ -122,7 +119,15 @@ public class SwoleGSAAdminServlet extends GSAAdminServlet {
 
 
 
+    class Query {
+	    final String rql;
+	    final String itemType;
 
+	    Query(String rql, String itemType){
+	        this.rql = rql;
+	        this.itemType = itemType;
+        }
+    }
 
     /**
      * Overrides the printAdmin and injects and RQL toolbar above the RQL box. Also makes the RQL box a little bigger by default.
@@ -141,7 +146,7 @@ public class SwoleGSAAdminServlet extends GSAAdminServlet {
 
 
 	    //We use a hash set incase they have duplicate queries for some reason
-	    final HashSet<String> queries = new HashSet<String>();
+	    final Queue<Query> queries = new LinkedList<Query>();
 
         String incomingQuery = req.getParameter("xmltext");
         if(incomingQuery != null){
@@ -158,12 +163,13 @@ public class SwoleGSAAdminServlet extends GSAAdminServlet {
                 NodeList childNodes = doc.getDocumentElement().getChildNodes();
 
                 for(int i = 0; i < childNodes.getLength(); i++){
-                    org.w3c.dom.Node child = childNodes.item(0);
+                    org.w3c.dom.Node child = childNodes.item(i);
                     if(child instanceof Element){
+                        Element ele = (Element)child;
 
-                        if("query-items".equals(((Element) child).getTagName())){
-                            queries.add(child.getTextContent());
-                            out.println(i + ": " + child.getTextContent());
+                        if("query-items".equals(ele.getTagName()) && ele.hasAttribute("item-descriptor")){
+                            queries.add(new Query(ele.getTextContent(), ele.getAttribute("item-descriptor")));
+                            out.println(i + ": " + ele.getTextContent());
 
                         }
                     }
@@ -201,11 +207,46 @@ public class SwoleGSAAdminServlet extends GSAAdminServlet {
                         inPreCodeBlock = true;
                     } else if("</code></pre><p>".equals(s)){
                         inPreCodeBlock = false;
-                    } else if(inPreCodeBlock){
+                    } else if(inPreCodeBlock && !queries.isEmpty()){
+                        //this isn't the best way to do this i'm sure..but it's tricky because the text we link does not include
+                        //the item descriptor...and we have to be sure to only link 1 line per query
+                        //for example imagine two ALL RANGE 0+10 queries on 2 distinct items..if we ONLY matched on rql
+                        //then both would match so how would we know which to link?
+                        //This pattern works as long as there is only 1 query per line..and they are returned in order found
 
-                        for(String q : queries){
-                            s = s.replace(q, "<a href=\"\">" + q + "</a>");
+                        //To make order not matter we'd have to loop through the list of queries for each line
+                        //
+
+                        Query queryToMatch = queries.remove();
+
+                        String[] lines = s.split("\n");
+                        StringBuilder sb = new StringBuilder();
+
+                        for(String  l : lines){
+                            if(queryToMatch == null || l.trim().startsWith("<")){
+                                //A lot of lines of data results start with < and never have queries
+                                //so let's ignore those
+                                //also this projects us in the unlikley case a piece of data has text matching our query RQL
+                                sb.append(l);
+                            } else if(l.contains(queryToMatch.rql)){
+                                //it's in this line
+                                sb.append(l.replace(queryToMatch.rql, "<a href=\"" + queryToMatch.itemType + "\">" + queryToMatch.rql + "</a>"));
+                                //start looking for the next query
+
+                                //last time through this will be empty
+                                if(!queries.isEmpty()) {
+                                    queryToMatch = queries.remove();
+                                }
+                            } else {
+                                //not found in the line, just pass it through
+                                sb.append(l);
+                            }
+
+                            //put that newline we split on back
+                            sb.append("\n");
                         }
+
+                        s = sb.toString();
 
                     }
 
