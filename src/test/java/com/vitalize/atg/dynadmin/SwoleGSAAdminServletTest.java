@@ -290,6 +290,71 @@ public class SwoleGSAAdminServletTest {
 
 
     @Test
+    public void testFormPostsToResultsFragment() throws ServletException, IOException, RepositoryException {
+
+
+        final StringBuilder allOutputBuilder = new StringBuilder();
+
+        doAnswer(
+            new Answer<Object>() {
+                public Object answer(InvocationOnMock invocation) throws Throwable {
+                    allOutputBuilder.append(invocation.getArguments()[0]);
+                    return null;
+                }
+            }
+        ).when(mockOutputStream).println(anyString());
+
+        when(mockGSARepo.getItemDescriptorNames())
+            .thenReturn(new String[0]);
+
+
+        SwoleGSAAdminServlet subject = new SwoleGSAAdminServlet(
+            mockGSARepo,
+            mockLogger,
+            mockNucleus,
+            mockTxManager
+        ){
+            //This is a bit tricky to test because we are relying on the stubs impl for super class
+            //but that doesn't actually do anything...anyone have a better idea?
+            @Override
+            protected void printAdminInternal(HttpServletRequest req, HttpServletResponse res, ServletOutputStream out) throws ServletException, IOException {
+
+                out.println("<form method=\"POST\">");
+            }
+
+            @Override
+            protected String formatServiceName(String serviceName, HttpServletRequest req) {
+                return "";
+            }
+
+            @Override
+            protected DynamoHttpServletRequest wrapRequest(HttpServletRequest req, HttpServletResponse res, String xml) {
+                return mockDynamoRequest;
+            }
+        };
+
+
+        subject.printAdmin(
+            mockRequest,
+            mockResponse,
+            mockOutputStream
+        );
+
+
+        String allOutput = allOutputBuilder.toString();
+
+
+        assertThat(
+            "form must post to RQL_RESULTS fragment",
+            allOutput,
+            containsString("<form method=\"POST\" action=\"#RQL_RESULTS\">")
+        );
+
+
+    }
+
+
+    @Test
     public void testLinkToQueriesNoXMLRequest() throws ServletException, IOException, RepositoryException {
 
 
