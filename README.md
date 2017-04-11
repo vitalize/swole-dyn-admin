@@ -9,11 +9,14 @@ The GSA Admin Servlet is responsbile for drawing the GSAReposotry admin interfac
 
 #### Jump to Query Box
 If you have ever had a repo with a lot of item descriptors..you are used to scrolling down to get to the query box.  Swole Dyn Admin adds a convenient hyperlink to jump you down to RQL box.
-
+![Jump Around, Jump Around, Get up, Get Up, and Get Down...jump..jump..jump](/screenshots/SwoleGSAAdminServlet/jump-to-query.png)
 
 #### RQL Toolbar
+If you have used RQL you have certainly types `<query-items item-descriptor=...` enough in your life.  Now you can point and click yourself to constructing the most basic queries!  Options for ordering and paging the results are also available, as well as a handy link to the online RQL overview.
+![It looks terrible, and it functions only slightly better](/screenshots/SwoleGSAAdminServlet/rql-toolbar.png)
 
-#### Bigger RQL Box
+#### Better RQL Box
+The RQL Box is now bigger...but it's better too.  When you submit the query it 
 
 #### Link to RQL Overview
 
