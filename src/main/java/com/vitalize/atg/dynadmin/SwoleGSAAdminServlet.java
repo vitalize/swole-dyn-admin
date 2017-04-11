@@ -215,7 +215,13 @@ public class SwoleGSAAdminServlet extends GSAAdminServlet {
         //The dynamohttpservlet request seems to be a request wrapper itself..so
         //i used it and it worked..but might be causing some unexpected issues since it may not
         //be a fully compliant wrapper...i dunno.
-        DynamoHttpServletRequest wrappedRequest = new DynamoHttpServletRequest();
+        DynamoHttpServletRequest wrappedRequest = new DynamoHttpServletRequest(){
+
+            @Override
+            public String getParameter(String s) {
+                return req.getParameter(s);
+            }
+        };
         wrappedRequest.setRequest(req);
 
 
