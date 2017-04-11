@@ -3,6 +3,7 @@ package com.vitalize.atg.dynadmin;
 import atg.adapter.gsa.GSAAdminServlet;
 import atg.adapter.gsa.GSARepository;
 import atg.beans.DynamicPropertyDescriptor;
+import atg.core.util.StringUtils;
 import atg.nucleus.Nucleus;
 import atg.nucleus.logging.ApplicationLogging;
 import atg.repository.RepositoryException;
@@ -17,9 +18,7 @@ import org.xml.sax.SAXException;
 
 import javax.servlet.ServletException;
 import javax.servlet.ServletOutputStream;
-import javax.servlet.ServletRequest;
 import javax.servlet.http.HttpServletRequest;
-import javax.servlet.http.HttpServletRequestWrapper;
 import javax.servlet.http.HttpServletResponse;
 import javax.transaction.TransactionManager;
 import javax.xml.parsers.DocumentBuilder;
@@ -131,11 +130,19 @@ public class SwoleGSAAdminServlet extends GSAAdminServlet {
 
     class Query {
 	    final String rql;
+
+        /**
+         * In the pre code a few escapes are performed
+         */
+	    final String rqlInPreCode;
 	    final String itemType;
 
 	    Query(String rql, String itemType){
 	        this.rql = rql;
 	        this.itemType = itemType;
+
+	        //TODO: not sure how to unit test this is actually happening..maybe a protected method on SwoleGASAdminServler that i can override in tests?
+	        this.rqlInPreCode = StringUtils.escapeHtmlString(rql);
         }
     }
 
@@ -266,9 +273,9 @@ public class SwoleGSAAdminServlet extends GSAAdminServlet {
                                 //so let's ignore those
                                 //also this projects us in the unlikley case a piece of data has text matching our query RQL
                                 sb.append(l);
-                            } else if(l.contains(queryToMatch.rql)){
+                            } else if(l.contains(queryToMatch.rqlInPreCode)){
                                 //it's in this line
-                                sb.append(l.replace(queryToMatch.rql, "<a href=\"" + pathToThisComponent + "?item-type=" + URLEncoder.encode(queryToMatch.itemType, "UTF-8") + "&rql-query=" + URLEncoder.encode(queryToMatch.rql, "UTF-8") + "#RQL_RESULTS\">" + queryToMatch.rql + "</a>"));
+                                sb.append(l.replace(queryToMatch.rqlInPreCode, "<a href=\"" + pathToThisComponent + "?item-type=" + URLEncoder.encode(queryToMatch.itemType, "UTF-8") + "&rql-query=" + URLEncoder.encode(queryToMatch.rql, "UTF-8") + "#RQL_RESULTS\">" + queryToMatch.rqlInPreCode + "</a>"));
                                 //start looking for the next query
 
                                 //last time through this will be empty
