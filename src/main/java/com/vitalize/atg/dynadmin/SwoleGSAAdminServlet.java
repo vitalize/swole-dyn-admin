@@ -204,7 +204,6 @@ public class SwoleGSAAdminServlet extends GSAAdminServlet {
             }
         }
 
-        final String overriddenXMLTextParam = incomingQuery;
 
         //TODO: Is it safe to assume the path is = service name?
         final String pathToThisComponent = this.formatServiceName(req.getPathInfo(), req);
@@ -216,7 +215,7 @@ public class SwoleGSAAdminServlet extends GSAAdminServlet {
         //The dynamohttpservlet request seems to be a request wrapper itself..so
         //i used it and it worked..but might be causing some unexpected issues since it may not
         //be a fully compliant wrapper...i dunno.
-        DynamoHttpServletRequest wrappedRequest = this.wrapRequest(req, res);
+        DynamoHttpServletRequest wrappedRequest = this.wrapRequest(req, res, incomingQuery);
 
 
 
@@ -339,12 +338,22 @@ public class SwoleGSAAdminServlet extends GSAAdminServlet {
 
     protected DynamoHttpServletRequest wrapRequest(
         final HttpServletRequest req,
-        final HttpServletResponse res
+        final HttpServletResponse res,
+        final String overriddenXmlParamValue
     ){
         DynamoHttpServletRequest r = new DynamoHttpServletRequest(){
 
             @Override
+            public boolean isBrowserType(String pFeature) {
+                //this is super chatty in the logs, so let's just clear it out..i guess...
+                return false;
+            }
+
+            @Override
             public String getParameter(String s) {
+                if("xmltext".equals(s)){
+                    return overriddenXmlParamValue;
+                }
                 return req.getParameter(s);
             }
         };

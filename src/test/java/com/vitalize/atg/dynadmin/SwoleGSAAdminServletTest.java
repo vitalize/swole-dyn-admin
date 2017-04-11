@@ -99,7 +99,7 @@ public class SwoleGSAAdminServletTest {
             }
 
             @Override
-            protected DynamoHttpServletRequest wrapRequest(HttpServletRequest req, HttpServletResponse res) {
+            protected DynamoHttpServletRequest wrapRequest(HttpServletRequest req, HttpServletResponse res, String xml) {
                 return mockDynamoRequest;
             }
         };
@@ -174,7 +174,7 @@ public class SwoleGSAAdminServletTest {
             }
 
             @Override
-            protected DynamoHttpServletRequest wrapRequest(HttpServletRequest req, HttpServletResponse res) {
+            protected DynamoHttpServletRequest wrapRequest(HttpServletRequest req, HttpServletResponse res, String xml) {
                 return mockDynamoRequest;
             }
         };
@@ -263,7 +263,7 @@ public class SwoleGSAAdminServletTest {
             }
 
             @Override
-            protected DynamoHttpServletRequest wrapRequest(HttpServletRequest req, HttpServletResponse res) {
+            protected DynamoHttpServletRequest wrapRequest(HttpServletRequest req, HttpServletResponse res, String xml) {
                 return mockDynamoRequest;
             }
         };
@@ -337,7 +337,7 @@ public class SwoleGSAAdminServletTest {
             }
 
             @Override
-            protected DynamoHttpServletRequest wrapRequest(HttpServletRequest req, HttpServletResponse res) {
+            protected DynamoHttpServletRequest wrapRequest(HttpServletRequest req, HttpServletResponse res, String xml) {
                 return mockDynamoRequest;
             }
         };
@@ -413,7 +413,7 @@ public class SwoleGSAAdminServletTest {
             }
 
             @Override
-            protected DynamoHttpServletRequest wrapRequest(HttpServletRequest req, HttpServletResponse res) {
+            protected DynamoHttpServletRequest wrapRequest(HttpServletRequest req, HttpServletResponse res, String xml) {
                 return mockDynamoRequest;
             }
         };
@@ -461,7 +461,7 @@ public class SwoleGSAAdminServletTest {
             }
 
             @Override
-            protected DynamoHttpServletRequest wrapRequest(HttpServletRequest req, HttpServletResponse res) {
+            protected DynamoHttpServletRequest wrapRequest(HttpServletRequest req, HttpServletResponse res, String xml) {
                 return mockDynamoRequest;
             }
         };
@@ -509,7 +509,7 @@ public class SwoleGSAAdminServletTest {
 
 
             @Override
-            protected DynamoHttpServletRequest wrapRequest(HttpServletRequest req, HttpServletResponse res) {
+            protected DynamoHttpServletRequest wrapRequest(HttpServletRequest req, HttpServletResponse res, String xml) {
                 return mockDynamoRequest;
             }
         };
@@ -556,7 +556,7 @@ public class SwoleGSAAdminServletTest {
             }
 
             @Override
-            protected DynamoHttpServletRequest wrapRequest(HttpServletRequest req, HttpServletResponse res) {
+            protected DynamoHttpServletRequest wrapRequest(HttpServletRequest req, HttpServletResponse res, String xml) {
                 return mockDynamoRequest;
             }
         };
@@ -602,7 +602,7 @@ public class SwoleGSAAdminServletTest {
 
 
             @Override
-            protected DynamoHttpServletRequest wrapRequest(HttpServletRequest req, HttpServletResponse res) {
+            protected DynamoHttpServletRequest wrapRequest(HttpServletRequest req, HttpServletResponse res, String xml) {
                 return mockDynamoRequest;
             }
         };
@@ -675,7 +675,7 @@ public class SwoleGSAAdminServletTest {
 
 
             @Override
-            protected DynamoHttpServletRequest wrapRequest(HttpServletRequest req, HttpServletResponse res) {
+            protected DynamoHttpServletRequest wrapRequest(HttpServletRequest req, HttpServletResponse res, String xml) {
                 return mockDynamoRequest;
             }
         };
@@ -752,7 +752,7 @@ public class SwoleGSAAdminServletTest {
             }
 
             @Override
-            protected DynamoHttpServletRequest wrapRequest(HttpServletRequest req, HttpServletResponse res) {
+            protected DynamoHttpServletRequest wrapRequest(HttpServletRequest req, HttpServletResponse res, String xml) {
                 return mockDynamoRequest;
             }
         };
