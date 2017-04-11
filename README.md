@@ -16,10 +16,11 @@ If you have used RQL you have certainly types `<query-items item-descriptor=...`
 ![It looks terrible, and it functions only slightly better](/screenshots/SwoleGSAAdminServlet/rql-toolbar.png)
 
 #### Better RQL Box
-The RQL Box is now bigger...but it's better too.  When you submit the query it 
+The RQL Box is now bigger...but it's better too.  When you submit a query you no longer have to scroll down to see your results, instead the RQL box submits against a html fragment identifier for the results.  No screen shot can do this marvelousness justice.
 
-#### Link to RQL Overview
-
+#### Link to RQL Query
+It's reasonable to assume a lot of the time you are doing RQL queries you are troubleshooting an issue.  An important component of troubleshooting is sharing discoveries with your team.  This has always been hard in the dyn admin because it requires sharing the link to the admin servlet, credentials, and usually the RQL query that shows the data.  With the SwoleGSAAdminServlet the first and third pieces are combined in a single link that will execute your `query-items` query!  What's more every `query-items` you perform now has a shareable link generated for it.
+![Take this and shove it in your Jira ticket](/screenshots/SwoleGSAAdminServlet/link-to-rql-query.png)
 
 ## How?
 The jar contains a bunch of extensions to common ATG nucleus classes.  Drop properties files that override the class used with the swole version.  
@@ -31,9 +32,12 @@ $class=com.vitalize.atg.adapter.gsa.SwoleGSARepository
 
 
 ## Why?
-If you use or develop with Oracle ATG Commerce, then you certainly are a Dyn Admin user.  Vitalize thought it would be better to have swole versions of things.
+If you use or develop with Oracle ATG Commerce, then you certainly are a Dyn Admin user.  Vitalize thought it would be better to have swole versions of things when developing [bodybuilding.com](https://www.bodybuilding.com/store)
  
 ## Contribute?
+Ideas are needed!  Everyone has probably said "I wish dyn admin would..." at some point, so now you have a place to express that wish.  Just open an issue.
+
+We also happily accept poll requests. The nature of the project is that it's hard to verify a feature works on all versions, so be prepared to rework some things to make them more version agnostics..possibly.  The dyn admin doesn't change much...so maybe it will all be ok.  We appreciate reports of incompatibilities.
 
 ## LICENSE
 Copyright 2017 Vitalize LLC
