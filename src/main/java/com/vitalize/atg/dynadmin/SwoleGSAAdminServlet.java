@@ -9,6 +9,7 @@ import atg.repository.RepositoryException;
 import atg.repository.RepositoryItemDescriptor;
 import atg.repository.RepositoryPropertyDescriptor;
 import atg.servlet.DynamoHttpServletRequest;
+import atg.servlet.DynamoHttpServletResponse;
 import org.w3c.dom.Document;
 import org.w3c.dom.Element;
 import org.w3c.dom.NodeList;
@@ -215,14 +216,8 @@ public class SwoleGSAAdminServlet extends GSAAdminServlet {
         //The dynamohttpservlet request seems to be a request wrapper itself..so
         //i used it and it worked..but might be causing some unexpected issues since it may not
         //be a fully compliant wrapper...i dunno.
-        DynamoHttpServletRequest wrappedRequest = new DynamoHttpServletRequest(){
+        DynamoHttpServletRequest wrappedRequest = this.wrapRequest(req, res);
 
-            @Override
-            public String getParameter(String s) {
-                return req.getParameter(s);
-            }
-        };
-        wrappedRequest.setRequest(req);
 
 
 		printAdminInternal(
@@ -342,7 +337,30 @@ public class SwoleGSAAdminServlet extends GSAAdminServlet {
 
 
 
+    protected DynamoHttpServletRequest wrapRequest(
+        final HttpServletRequest req,
+        final HttpServletResponse res
+    ){
+        DynamoHttpServletRequest r = new DynamoHttpServletRequest(){
 
+            @Override
+            public String getParameter(String s) {
+                return req.getParameter(s);
+            }
+        };
+        r.setRequest(req);
+
+        if(res instanceof DynamoHttpServletResponse){
+            r.setResponse((DynamoHttpServletResponse) res);
+        } else {
+            DynamoHttpServletResponse wrappedResponse = new DynamoHttpServletResponse(res);
+            wrappedResponse.setRequest(r);
+            r.setResponse(wrappedResponse);
+        }
+
+        return r;
+
+    }
 
 
 }
