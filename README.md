@@ -2,14 +2,20 @@
 A collection of classes that can make your Oracle ATG Commerce Dyn Admin Swole.
 
 ## What?
+This project makes the dyn admin swole by tweaking the ouput to add various features.  These features are explained in the subsections.
 
-### RQL Toolbar
+### GSA Admin Servlet Enhancements
+The GSA Admin Servlet is responsbile for drawing the GSAReposotry admin interface.  The page you probably spend a lot of time running arbitraty RQL within.  Swole Dyn Admin makes this servlet swole with a couple of useful features.
+
+#### Jump to Query Box
+If you have ever had a repo with a lot of item descriptors..you are used to scrolling down to get to the query box.  Swole Dyn Admin adds a convenient hyperlink to jump you down to RQL box.
 
 
-### Bigger RQL Box
+#### RQL Toolbar
 
+#### Bigger RQL Box
 
-### Link to RQL Overview
+#### Link to RQL Overview
 
 
 ## How?
