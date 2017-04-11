@@ -8,6 +8,7 @@ import atg.nucleus.logging.ApplicationLogging;
 import atg.repository.RepositoryException;
 import atg.repository.RepositoryItemDescriptor;
 import atg.repository.RepositoryPropertyDescriptor;
+import atg.servlet.DynamoHttpServletRequest;
 import org.w3c.dom.Document;
 import org.w3c.dom.Element;
 import org.w3c.dom.NodeList;
@@ -15,6 +16,7 @@ import org.xml.sax.SAXException;
 
 import javax.servlet.ServletException;
 import javax.servlet.ServletOutputStream;
+import javax.servlet.ServletRequest;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletRequestWrapper;
 import javax.servlet.http.HttpServletResponse;
@@ -206,9 +208,19 @@ public class SwoleGSAAdminServlet extends GSAAdminServlet {
         //TODO: Is it safe to assume the path is = service name?
         final String pathToThisComponent = this.formatServiceName(req.getPathInfo(), req);
 
+        //I tried use HttpsRequestWrapper but it seems ATG has some funcitonality somewhere that
+        //treats non DynamoHttpServlerRequests (or maybe JUST HttpRequestWrapper's) as some
+        //special case and then seesm to call swapRequest on the actual DynamoHttpServletRequest
+        //(not sure how it gets a handle to that since it's been wrapped..?
+        //The dynamohttpservlet request seems to be a request wrapper itself..so
+        //i used it and it worked..but might be causing some unexpected issues since it may not
+        //be a fully compliant wrapper...i dunno.
+        DynamoHttpServletRequest wrappedRequest = new DynamoHttpServletRequest();
+        wrappedRequest.setRequest(wrappedRequest);
+
 
 		printAdminInternal(
-            new HttpServletRequestWrapper(req),
+            wrappedRequest,
             res,
             new DelegatingServletOutputStream(out){
 
