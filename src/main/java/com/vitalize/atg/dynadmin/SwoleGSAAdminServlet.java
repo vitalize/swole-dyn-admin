@@ -235,6 +235,8 @@ public class SwoleGSAAdminServlet extends GSAAdminServlet {
                         //While we're at it...make that a bit bigger
                         s = RQL_TEXT_AREA_MARKUP_BIGGER;
 
+                    } else if("</a><br>".equals(s)){
+                        s = "</a>, <a href=\"#RQL_TOOLBAR\">Jump to Query Box</a><br>";
                     } else if("<pre><code>".equals(s)){
                         inPreCodeBlock = true;
                     } else if("</code></pre><p>".equals(s)){
