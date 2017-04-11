@@ -447,14 +447,20 @@ public class SwoleGSAAdminServletTest {
         assertThat(
             "text during must have been altered",
             allOutput,
-            containsString("during <a href=\"" + "/path/to/component/service" + "?item-type=dog&rql-query=ALL+RANGE+0%2B10\">ALL RANGE 0+10</a> during")
+            containsString("during <a href=\"" + "/path/to/component/service" + "?item-type=dog&rql-query=ALL+RANGE+0%2B10#RQL_RESULTS\">ALL RANGE 0+10</a> during")
+        );
+
+        assertThat(
+            "a RQL results target should be created",
+            allOutput,
+            containsString("<span id=\"RQL_RESULTS\"></span>")
         );
 
     }
 
 
 
-    @Ignore
+
     @Test
     public void testQueryQSPsAreRespected() throws ServletException, IOException, RepositoryException {
 
@@ -478,7 +484,22 @@ public class SwoleGSAAdminServletTest {
             }
 
             @Override
+            protected String formatServiceName(String serviceName, HttpServletRequest req) {
+                return "";
+            }
+
+
+            @Override
             protected DynamoHttpServletRequest wrapRequest(HttpServletRequest req, HttpServletResponse res, String xml) {
+                assertEquals(
+                    "xmltext must be simulated from QSP params",
+                    "<query-items item-descriptor=\"dog\">ALL RANGE 1+10</query-items>",
+                    xml
+                );
+
+                when(mockDynamoRequest.getParameter("xmltext"))
+                    .thenReturn(xml);
+
                 return mockDynamoRequest;
             }
         };
@@ -637,10 +658,9 @@ public class SwoleGSAAdminServletTest {
     }
 
 
-    @Ignore
+
     @Test
     public void testQueryQSPsAreIgnoredIfXmlTextParamPresent() throws ServletException, IOException, RepositoryException {
-
 
         SwoleGSAAdminServlet subject = new SwoleGSAAdminServlet(
             mockGSARepo,
@@ -668,6 +688,15 @@ public class SwoleGSAAdminServletTest {
 
             @Override
             protected DynamoHttpServletRequest wrapRequest(HttpServletRequest req, HttpServletResponse res, String xml) {
+                assertEquals(
+                    "xmltext must pass through when present",
+                    "<query-items item-descriptor=\"cat\">ALL RANGE 10+20</query-items>",
+                    xml
+                );
+
+                when(mockDynamoRequest.getParameter("xmltext"))
+                    .thenReturn(xml);
+
                 return mockDynamoRequest;
             }
         };
@@ -694,7 +723,7 @@ public class SwoleGSAAdminServletTest {
 
 
     @Test
-    public void testLinkToQueriesEnsurePropertieValuesAreNotMatched() throws ServletException, IOException, RepositoryException {
+    public void testLinkToQueriesEnsurePropertyValuesAreNotMatched() throws ServletException, IOException, RepositoryException {
 
 
         final StringBuilder allOutputBuilder = new StringBuilder();

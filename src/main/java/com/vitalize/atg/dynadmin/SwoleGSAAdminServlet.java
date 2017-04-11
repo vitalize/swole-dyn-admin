@@ -239,6 +239,7 @@ public class SwoleGSAAdminServlet extends GSAAdminServlet {
                         s = "</a>, <a href=\"#RQL_TOOLBAR\">Jump to Query Box</a><br>";
                     } else if("<pre><code>".equals(s)){
                         inPreCodeBlock = true;
+                        out.println("<span id=\"RQL_RESULTS\"></span>");
                     } else if("</code></pre><p>".equals(s)){
                         inPreCodeBlock = false;
                     } else if(inPreCodeBlock && !queries.isEmpty()){
@@ -264,7 +265,7 @@ public class SwoleGSAAdminServlet extends GSAAdminServlet {
                                 sb.append(l);
                             } else if(l.contains(queryToMatch.rql)){
                                 //it's in this line
-                                sb.append(l.replace(queryToMatch.rql, "<a href=\"" + pathToThisComponent + "?item-type=" + URLEncoder.encode(queryToMatch.itemType, "UTF-8") + "&rql-query=" + URLEncoder.encode(queryToMatch.rql, "UTF-8") + "\">" + queryToMatch.rql + "</a>"));
+                                sb.append(l.replace(queryToMatch.rql, "<a href=\"" + pathToThisComponent + "?item-type=" + URLEncoder.encode(queryToMatch.itemType, "UTF-8") + "&rql-query=" + URLEncoder.encode(queryToMatch.rql, "UTF-8") + "#RQL_RESULTS\">" + queryToMatch.rql + "</a>"));
                                 //start looking for the next query
 
                                 //last time through this will be empty
