@@ -216,7 +216,7 @@ public class SwoleGSAAdminServlet extends GSAAdminServlet {
         //i used it and it worked..but might be causing some unexpected issues since it may not
         //be a fully compliant wrapper...i dunno.
         DynamoHttpServletRequest wrappedRequest = new DynamoHttpServletRequest();
-        wrappedRequest.setRequest(wrappedRequest);
+        wrappedRequest.setRequest(req);
 
 
 		printAdminInternal(
