@@ -223,8 +223,8 @@ public class SwoleGSAAdminServlet extends GSAAdminServlet {
         //i used it and it worked..but might be causing some unexpected issues since it may not
         //be a fully compliant wrapper...i dunno.
         DynamoHttpServletRequest wrappedRequest = this.wrapRequest(req, res, incomingQuery);
-
-
+        out.println("before: " + pathToThisComponent + " after: " + this.formatServiceName(wrappedRequest.getPathInfo(), wrappedRequest));
+        out.println("<pre><code>" + wrappedRequest.toString() + "</code></pre>");
 
 		printAdminInternal(
             wrappedRequest,
@@ -368,6 +368,11 @@ public class SwoleGSAAdminServlet extends GSAAdminServlet {
                 }
                 return req.getParameter(s);
             }
+
+            @Override
+            public String getPathInfo() {
+                return super.getPathInfo();
+            }
         };
         r.setRequest(req);
 
@@ -378,6 +383,7 @@ public class SwoleGSAAdminServlet extends GSAAdminServlet {
             wrappedResponse.setRequest(r);
             r.setResponse(wrappedResponse);
         }
+
 
         return r;
 

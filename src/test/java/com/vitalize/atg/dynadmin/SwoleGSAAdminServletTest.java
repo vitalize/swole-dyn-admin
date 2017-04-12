@@ -75,6 +75,7 @@ public class SwoleGSAAdminServletTest {
         MockitoAnnotations.initMocks(this);
     }
 
+    @Ignore
     @Test
     public void testPrintAdminRQLBoxNotPresent() throws ServletException, IOException {
 
