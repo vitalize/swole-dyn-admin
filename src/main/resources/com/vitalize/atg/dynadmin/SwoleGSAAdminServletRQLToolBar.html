@@ -151,16 +151,16 @@ $(document).ready(function() {
     $("#RQL_ITEM_TYPE").trigger("change");
 
 
-    var queryByIdButton = $("#RQL_QUERY_BY_ID").click(
+    $("#RQL_QUERY_BY_ID").click(
         function(){
             var typeSelector = document.getElementById('RQL_ITEM_TYPE');
             var selectedType = typeSelector.options[typeSelector.selectedIndex].text;
 
 
             var queryBox = $("textarea[name='xmltext']");
-            queryBox.val( queryBox.val() + '<query-items item-descriptor="' + selectedType + '">ID=""</query-items>\n');
-            var start = queryBox.val().length - 20;
-            queryBox.focus().selectRange(start, start +2).focus();
+            queryBox.val( queryBox.val() + '<query-items item-descriptor="' + selectedType + '">ID="da id"</query-items>\n');
+            var start = queryBox.val().length - 16;
+            queryBox.focus().selectRange(start, start + 6).focus();
         }
     );
 
