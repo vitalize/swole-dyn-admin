@@ -160,7 +160,7 @@ $(document).ready(function() {
             var queryBox = $("textarea[name='xmltext']");
             queryBox.val( queryBox.val() + '<query-items item-descriptor="' + selectedType + '">ID="da id"</query-items>\n');
             var start = queryBox.val().length - 21;
-            queryBox.focus().selectRange(start, start + 6).focus();
+            queryBox.focus().selectRange(start, start + 5).focus();
         }
     );
 
