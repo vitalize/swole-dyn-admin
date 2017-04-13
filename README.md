@@ -15,6 +15,9 @@ If you have ever had a repo with a lot of item descriptors..you are used to scro
 If you have used RQL you have certainly types `<query-items item-descriptor=...` enough in your life.  Now you can point and click yourself to constructing the most basic queries!  Options for ordering and paging the results are also available, as well as a handy link to the online RQL overview.
 ![It looks terrible, and it functions only slightly better](/screenshots/SwoleGSAAdminServlet/rql-toolbar.png)
 
+It's very likely you often want to query for something by it's ID.  The Append Query by ID button is made for this, it appends a query and moves the focus of the cursor to allow you to type in your ID quickly
+![Saves precious microseconds](/screenshots/SwoleGSAAdminServlet/rql-toolbar-query-by-id.png)
+
 #### Better RQL Box
 The RQL Box is now bigger...but it's better too.  When you submit a query you no longer have to scroll down to see your results, instead the RQL box submits against a html fragment identifier for the results.  No screen shot can do this marvelousness justice.
 
