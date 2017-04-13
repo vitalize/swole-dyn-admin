@@ -10,7 +10,7 @@ import atg.nucleus.logging.ApplicationLogging;
 import atg.repository.Repository;
 import atg.repository.RepositoryException;
 import atg.repository.RepositoryItemDescriptor;
-import atg.servlet.servlet.DynamoHttpServletRequest;
+import atg.servlet.DynamoHttpServletRequest;
 import org.junit.Before;
 import org.junit.Ignore;
 import org.junit.Test;
