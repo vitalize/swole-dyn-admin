@@ -65,6 +65,8 @@ function rqlInsert(){
 }
 
 
+
+
 function rqlClear() {
     document.getElementsByName('xmltext')[0].value = "";
 }
@@ -72,6 +74,26 @@ function rqlClear() {
 
 $(document).ready(function() {
 
+    //stolen from http://stackoverflow.com/posts/841121/revisions
+    $.fn.selectRange = function(start, end) {
+        if(end === undefined) {
+            end = start;
+        }
+        return this.each(function() {
+            if('selectionStart' in this) {
+                this.selectionStart = start;
+                this.selectionEnd = end;
+            } else if(this.setSelectionRange) {
+                this.setSelectionRange(start, end);
+            } else if(this.createTextRange) {
+                var range = this.createTextRange();
+                range.collapse(true);
+                range.moveEnd('character', end);
+                range.moveStart('character', start);
+                range.select();
+            }
+        });
+    };
 
 
     $("#RQL_ACTION_TYPE").select2();
@@ -82,13 +104,16 @@ $(document).ready(function() {
 
             var rangeToolbar = $("#RQL_RANGE_TOOLBAR");
             var orderByToolbar = $("#RQL_ORDER_BY_TOOLBAR");
+            var queryByIdButton = $("#RQL_QUERY_BY_ID");
 
             if(val === RQL_ACTION_TYPE_QUERY_ITEMS){
                 rangeToolbar.show();
                 orderByToolbar.show();
+                queryByIdButton.show();
             } else {
                 rangeToolbar.hide();
                 orderByToolbar.hide();
+                queryByIdButton.hide();
             }
         }
     );
@@ -126,6 +151,20 @@ $(document).ready(function() {
     $("#RQL_ITEM_TYPE").trigger("change");
 
 
+    var queryByIdButton = $("#RQL_QUERY_BY_ID").click(
+        function(){
+            var typeSelector = document.getElementById('RQL_ITEM_TYPE');
+            var selectedType = typeSelector.options[typeSelector.selectedIndex].text;
+
+
+            var queryBox = $("textarea[name='xmltext']");
+            queryBox.val( queryBox.val() + '<query-items item-descriptor="' + selectedType + '">ID=""</query-items>\n');
+            var start = queryBox.val().length - 20;
+            queryBox.focus().selectRange(start, start +2).focus();
+        }
+    );
+
+
 });
 </script>
 
@@ -145,9 +184,9 @@ $(document).ready(function() {
         <select id="RQL_ITEM_TYPE" style="width: 20%"></select>
 
 
-
-        <button onclick="rqlInsert();return false;">Append to Query</button>
-        <button onclick="rqlClear();return false;">Clear Query</button>
+        <button type="button" id="RQL_QUERY_BY_ID">Append Query by ID</button>
+        <button type="button" onclick="rqlInsert();return false;">Append to Query</button>
+        <button type="button" onclick="rqlClear();return false;">Clear Query</button>
         <input type="submit" value="Execute Query"/>
     </div>
 

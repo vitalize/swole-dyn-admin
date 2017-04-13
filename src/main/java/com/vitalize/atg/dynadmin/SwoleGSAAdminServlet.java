@@ -216,13 +216,8 @@ public class SwoleGSAAdminServlet extends GSAAdminServlet {
         final String pathToThisComponent = this.formatServiceName(req.getPathInfo(), req);
 
 
-        DynamoHttpServletRequest wrappedRequest = this.wrapRequest(req, res, incomingQuery);
-        out.println("before: " + pathToThisComponent + " after: " + this.formatServiceName(wrappedRequest.getPathInfo(), wrappedRequest));
-        out.println("<pre><code>" + req.toString() + "</code></pre>");
-        out.println("<pre><code>" + wrappedRequest.toString() + "</code></pre>");
-
 		printAdminInternal(
-            wrappedRequest,
+            this.wrapRequest(req, res, incomingQuery),
             res,
             new DelegatingServletOutputStream(out){
 
