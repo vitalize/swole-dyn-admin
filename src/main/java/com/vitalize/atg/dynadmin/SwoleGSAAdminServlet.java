@@ -224,6 +224,7 @@ public class SwoleGSAAdminServlet extends GSAAdminServlet {
         //be a fully compliant wrapper...i dunno.
         DynamoHttpServletRequest wrappedRequest = this.wrapRequest(req, res, incomingQuery);
         out.println("before: " + pathToThisComponent + " after: " + this.formatServiceName(wrappedRequest.getPathInfo(), wrappedRequest));
+        out.println("<pre><code>" + req.toString() + "</code></pre>");
         out.println("<pre><code>" + wrappedRequest.toString() + "</code></pre>");
 
 		printAdminInternal(
