@@ -3,7 +3,7 @@
 var RQL_ACTION_TYPE_QUERY_ITEMS = "query-items";
 var RQL_ACTION_TYPE_ADD_ITEM = "add-item";
 
-function rqlAdd(){
+function rqlInsert(){
     var typeSelector = document.getElementById('RQL_ITEM_TYPE');
     var selectedType = typeSelector.options[typeSelector.selectedIndex].text;
 
@@ -146,7 +146,7 @@ $(document).ready(function() {
 
 
 
-        <button onclick="rqlAdd();return false;">Append to Query</button>
+        <button onclick="rqlInsert();return false;">Append to Query</button>
         <button onclick="rqlClear();return false;">Clear Query</button>
         <input type="submit" value="Execute Query"/>
     </div>

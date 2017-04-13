@@ -215,13 +215,7 @@ public class SwoleGSAAdminServlet extends GSAAdminServlet {
         //TODO: Is it safe to assume the path is = service name?
         final String pathToThisComponent = this.formatServiceName(req.getPathInfo(), req);
 
-        //I tried use HttpsRequestWrapper but it seems ATG has some funcitonality somewhere that
-        //treats non DynamoHttpServlerRequests (or maybe JUST HttpRequestWrapper's) as some
-        //special case and then seesm to call swapRequest on the actual DynamoHttpServletRequest
-        //(not sure how it gets a handle to that since it's been wrapped..?
-        //The dynamohttpservlet request seems to be a request wrapper itself..so
-        //i used it and it worked..but might be causing some unexpected issues since it may not
-        //be a fully compliant wrapper...i dunno.
+
         DynamoHttpServletRequest wrappedRequest = this.wrapRequest(req, res, incomingQuery);
         out.println("before: " + pathToThisComponent + " after: " + this.formatServiceName(wrappedRequest.getPathInfo(), wrappedRequest));
         out.println("<pre><code>" + req.toString() + "</code></pre>");
@@ -354,6 +348,25 @@ public class SwoleGSAAdminServlet extends GSAAdminServlet {
         final HttpServletResponse res,
         final String overriddenXmlParamValue
     ){
+
+        //The simple case
+        if(req instanceof DynamoHttpServletRequest){
+            return new DelegatingDynamoServletRequest((DynamoHttpServletRequest)req) {
+
+                @Override
+                public String getParameter(String s) {
+                    if ("xmltext".equals(s)) {
+                        return overriddenXmlParamValue;
+                    }
+                    return req.getParameter(s);
+                }
+            };
+        }
+
+
+        //This generally works..but i've seen issues where some urls are creates as /dyn/admin/dyn/admin
+        //this only comes up if someone wrapped the request in the servlet chain..so let's wait till someone does that
+        //and complains
         DynamoHttpServletRequest r = new DynamoHttpServletRequest(){
 
             @Override
@@ -370,10 +383,6 @@ public class SwoleGSAAdminServlet extends GSAAdminServlet {
                 return req.getParameter(s);
             }
 
-            @Override
-            public String getPathInfo() {
-                return super.getPathInfo();
-            }
         };
         r.setRequest(req);
 
