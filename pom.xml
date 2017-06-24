@@ -2,33 +2,33 @@
 <project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
   <modelVersion>4.0.0</modelVersion>
 
-  <groupId>com.bodybuilding</groupId>
+  <groupId>com.vitalize</groupId>
   <artifactId>swole-dyn-admin</artifactId>
   <version>0.1.1-SNAPSHOT</version>
 
   <name>Swole Dyn Admin</name>
   <description>A bunch of things to make your Oracle ATG Commerce Dyn Admin swole</description>
   <packaging>jar</packaging>
-  <url>http://github.body.prod/commerce/swole-dyn-admin</url>
+  <url>http://github.com/vitalize/swole-dyn-admin</url>
   <scm>
-    <url>http://github.body.prod/commerce/swole-dyn-admin</url>
+    <url>http://github.com/vitalize/swole-dyn-admin</url>
   </scm>
 
   <distributionManagement>
-    <repository>
-      <id>bbcom</id>
-      <name>libs-release-local</name>
-      <url>http://artifactory/libs-release-local</url>
-    </repository>
-
     <snapshotRepository>
-      <id>bbcom</id>
-      <name>libs-snapshot-local</name>
-      <url>http://artifactory/libs-snapshot-local</url>
+      <id>ossrh</id>
+      <url>https://oss.sonatype.org/content/repositories/snapshots</url>
     </snapshotRepository>
+    <repository>
+      <id>ossrh</id>
+      <url>https://oss.sonatype.org/service/local/staging/deploy/maven2/</url>
+    </repository>
   </distributionManagement>
 
   <dependencies>
+
+    <!-- there should ONLY be test dependencies in here, other than ATG
+    we don't want to force anyone to have to add more jars.  Just keep it easy -->
     <dependency>
       <groupId>junit</groupId>
       <artifactId>junit</artifactId>
@@ -40,12 +40,14 @@
       <groupId>org.mockito</groupId>
       <artifactId>mockito-core</artifactId>
       <version>1.10.19</version>
+      <scope>test</scope>
     </dependency>
 
     <dependency>
       <groupId>org.hamcrest</groupId>
       <artifactId>hamcrest-library</artifactId>
       <version>1.3</version>
+      <scope>test</scope>
     </dependency>
   </dependencies>
 
@@ -67,6 +69,7 @@
             <configuration>
               <rules>
                 <requireJavaVersion>
+                  <!-- ATG runs java 1.6 -->
                   <version>1.6</version>
                 </requireJavaVersion>
               </rules>
@@ -136,7 +139,7 @@
       </plugin>
 
       <!-- from http://maven.apache.org/plugins/maven-gpg-plugin/usage.html -->
-      <!--plugin>
+      <plugin>
         <groupId>org.apache.maven.plugins</groupId>
         <artifactId>maven-gpg-plugin</artifactId>
         <version>1.6</version>
@@ -149,7 +152,7 @@
             </goals>
           </execution>
         </executions>
-      </plugin-->
+      </plugin>
 
 
 
@@ -192,7 +195,7 @@
 
     <profile>
       <!--
-        Used when live dev'ing in an IDE to ref ACTUAL interfaces that may need to be contirbuted to ATG Stubs
+        Used when live dev'ing in an IDE to ref ACTUAL interfaces that may need to be contributed to ATG Stubs
         This profile only makes sense if you have an artifactory instance over at artifactory with the matching
         artifact id's..which you probably do not.  Open to suggestions.
       -->
@@ -235,50 +238,15 @@
       </repositories>
     </profile>
 
-    <profile>
-      <!-- see Jenkinsfile, this profile is skipped on the deploy stage, but used in the build stage-->
-      <id>code-quality</id>
-      <build>
-        <plugins>
-          <plugin>
-            <groupId>org.apache.maven.plugins</groupId>
-            <artifactId>maven-pmd-plugin</artifactId>
-            <executions>
-              <execution>
-                <id>code-quality</id>
-                <goals>
-                  <goal>check</goal>
-                  <goal>cpd-check</goal>
-                </goals>
-              </execution>
-            </executions>
-          </plugin>
-
-          <plugin>
-            <groupId>org.codehaus.mojo</groupId>
-            <artifactId>findbugs-maven-plugin</artifactId>
-            <version>3.0.4</version>
-            <executions>
-              <execution>
-                <id>code-quality</id>
-                <goals>
-                  <goal>check</goal>
-                </goals>
-              </execution>
-            </executions>
-          </plugin>
-        </plugins>
-      </build>
-    </profile>
   </profiles>
 
   <issueManagement>
-    <system>Jira</system>
-    <url>http://jira/browse/COMAPI</url>
+    <system>github</system>
+    <url>https://github.com/vitalize/swole-dyn-admin/issues</url>
   </issueManagement>
 
   <ciManagement>
-    <system>Jenkins</system>
+    <system>TravisCI</system>
     <url>http://commerce-ci.dev/</url>
   </ciManagement>
 
@@ -293,6 +261,12 @@
 
 
   <developers>
+    <developer>
+      <id>VitalizeOSS</id>
+      <name>Vitalize OSS</name>
+      <email>oss@vitalize.com</email>
+      <url>https://talkshowhost.net</url>
+    </developer>
     <developer>
       <id>drdamour</id>
       <name>drdamour</name>
