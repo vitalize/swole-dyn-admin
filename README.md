@@ -5,17 +5,17 @@ A collection of classes that can make your Oracle ATG Commerce Dyn Admin Swole.
 This project makes the dyn admin swole by tweaking the ouput to add various features.  These features are explained in the subsections.
 
 ### GSA Admin Servlet Enhancements
-The GSA Admin Servlet is responsbile for drawing the GSAReposotry admin interface.  The page you probably spend a lot of time running arbitraty RQL within.  Swole Dyn Admin makes this servlet swole with a couple of useful features.
+The GSA Admin Servlet is responsbile for drawing the GSARepository admin interface.  The page you probably spend a lot of time running arbitraty RQL within.  Swole Dyn Admin makes this servlet swole with a couple of useful features.
 
 #### Jump to Query Box
 If you have ever had a repo with a lot of item descriptors..you are used to scrolling down to get to the query box.  Swole Dyn Admin adds a convenient hyperlink to jump you down to RQL box.
 ![Jump Around, Jump Around, Get up, Get Up, and Get Down...jump..jump..jump](/screenshots/SwoleGSAAdminServlet/jump-to-query.png)
 
 #### RQL Toolbar
-If you have used RQL you have certainly types `<query-items item-descriptor=...` enough in your life.  Now you can point and click yourself to constructing the most basic queries!  Options for ordering and paging the results are also available, as well as a handy link to the online RQL overview.
+If you have used RQL you have certainly typed `<query-items item-descriptor=...` enough in your life.  Now you can point and click yourself to constructing the most basic queries!  Options for ordering and paging the results are also available, as well as a handy link to the online RQL overview.
 ![It looks terrible, and it functions only slightly better](/screenshots/SwoleGSAAdminServlet/rql-toolbar.png)
 
-It's very likely you often want to query for something by it's ID.  The Append Query by ID button is made for this, it appends a query and moves the focus of the cursor to allow you to type in your ID quickly
+It's very likely you often want to query for something by its ID.  The Append Query by ID button is made for this, it appends a query and moves the focus of the cursor to allow you to type in your ID quickly
 ![Saves precious microseconds](/screenshots/SwoleGSAAdminServlet/rql-toolbar-query-by-id.png)
 
 #### Better RQL Box
@@ -40,7 +40,7 @@ If you use or develop with Oracle ATG Commerce, then you certainly are a Dyn Adm
 ## Contribute?
 Ideas are needed!  Everyone has probably said "I wish dyn admin would..." at some point, so now you have a place to express that wish.  Just open an issue.
 
-We also happily accept poll requests. The nature of the project is that it's hard to verify a feature works on all versions, so be prepared to rework some things to make them more version agnostics..possibly.  The dyn admin doesn't change much...so maybe it will all be ok.  We appreciate reports of incompatibilities.
+We also happily accept pull requests. The nature of the project is that it's hard to verify a feature works on all versions, so be prepared to rework some things to make them more version agnostics..possibly.  The dyn admin doesn't change much...so maybe it will all be ok.  We appreciate reports of incompatibilities.
 
 ## LICENSE
 Copyright 2017 Vitalize LLC
