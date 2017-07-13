@@ -5,9 +5,13 @@ jdk:
 
 
 before_install:
+  #these env vars are only set for internal repo PRs and branches...forks won't have em
   - if [ ! -z "$GPG_SECRET_KEYS" ]; then echo $GPG_SECRET_KEYS | base64 --decode | gpg --batch --import; fi
   - if [ ! -z "$GPG_OWNERTRUST" ]; then echo $GPG_OWNERTRUST | base64 --decode | gpg --batch --import-ownertrust; fi
 
 install: true
 
-script: ./mvnw clean deploy --settings .travis/settings.xml -B -U
+script: 
+  - 'if [ "$TRAVIS_PULL_REQUEST" != "false" ]; then ./mvnw clean test -B -U; fi'
+  - 'if [ "$TRAVIS_PULL_REQUEST" = "false" ]; then ./mvnw clean deploy --settings .travis/settings.xml -B -U; fi'
+
