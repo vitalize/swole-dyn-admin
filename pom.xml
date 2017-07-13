@@ -4,7 +4,7 @@
 
   <groupId>com.vitalize</groupId>
   <artifactId>swole-dyn-admin</artifactId>
-  <version>0.1.1-SNAPSHOT</version>
+  <version>0.1.1</version>
 
   <name>Swole Dyn Admin</name>
   <description>A bunch of things to make your Oracle ATG Commerce Dyn Admin swole</description>
