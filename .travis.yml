@@ -12,6 +12,6 @@ before_install:
 install: true
 
 script: 
-  - 'if [ "$TRAVIS_PULL_REQUEST" != "false" ]; then ./mvnw clean test -B -U; fi'
-  - 'if [ "$TRAVIS_PULL_REQUEST" = "false" ]; then ./mvnw clean deploy --settings .travis/settings.xml -B -U; fi'
+  - if [ "$TRAVIS_PULL_REQUEST" != "false" ]; then ./mvnw clean test -B -U; fi
+  - if [ "$TRAVIS_PULL_REQUEST" = "false" ]; then ./mvnw clean deploy --settings .travis/settings.xml -B -U; fi
 
