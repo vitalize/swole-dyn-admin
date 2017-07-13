@@ -9,4 +9,4 @@ before_install:
 
 install: true
 
-script: mvnw clean deploy --settings .travis/settings.xml -B -U
+script: ./mvnw clean deploy --settings .travis/settings.xml -B -U
