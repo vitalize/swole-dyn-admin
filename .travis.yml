@@ -16,3 +16,10 @@ script:
   - if [ "$TRAVIS_PULL_REQUEST" = "false"  ]; then if [ "$TRAVIS_BRANCH" = "master" ]; then ./mvnw clean deploy --settings .travis/settings.xml -B -U; fi; fi
   - if [ "$TRAVIS_PULL_REQUEST" = "false"  ]; then if [ "$TRAVIS_BRANCH" != "master" ]; then ./mvnw clean test -B -U; fi; fi
 
+notifications:
+  webhooks:
+    urls:
+      - https://webhooks.gitter.im/e/f43a314391abdfd18193
+    on_success: change
+    on_failure: always 
+    on_start: never 
