@@ -42,6 +42,10 @@ Ideas are needed!  Everyone has probably said "I wish dyn admin would..." at som
 
 We also happily accept pull requests. The nature of the project is that it's hard to verify a feature works on all versions, so be prepared to rework some things to make them more version agnostics..possibly.  The dyn admin doesn't change much...so maybe it will all be ok.  We appreciate reports of incompatibilities.
 
+## Disclaimer
+
+This project is completely unofficial and in no way endorsed by Oracle Corporation. Oracle ATG web commerce is a copyrighted product of Oracle Corporation and no rights are contested by this project or it contents.
+
 ## LICENSE
 Copyright 2017 Vitalize LLC
 
