@@ -4,6 +4,7 @@
 [![Gitter](https://img.shields.io/gitter/room/vitalize/swole-dyn-admin.svg)](https://gitter.im/vitalize/swole-dyn-admin)
 [![Codacy grade](https://img.shields.io/codacy/grade/33f5b076d8d24896a60588195209c99e.svg)](https://www.codacy.com/app/drdamour/swole-dyn-admin)
 [![Codacy coverage](https://img.shields.io/codacy/coverage/33f5b076d8d24896a60588195209c99e.svg)](https://www.codacy.com/app/drdamour/swole-dyn-admin)
+[![Coveralls](https://img.shields.io/coveralls/vitalize/swole-dyn-admin.svg)](https://coveralls.io/github/vitalize/swole-dyn-admin)
 
 # swole-dyn-admin
 A collection of classes that can make your Oracle ATG Commerce Dyn Admin Swole.
