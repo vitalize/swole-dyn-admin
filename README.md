@@ -50,6 +50,9 @@ Ideas are needed!  Everyone has probably said "I wish dyn admin would..." at som
 
 We also happily accept pull requests. The nature of the project is that it's hard to verify a feature works on all versions, so be prepared to rework some things to make them more version agnostics..possibly.  The dyn admin doesn't change much...so maybe it will all be ok.  We appreciate reports of incompatibilities.
 
+## Differences from BetterDynAdmin
+This project is very similar to the excellent [BetterDynAdmin](https://github.com/jc7447/BetterDynAdmin).  Surprisingly this project was created without knowing of BetterDynAdmin's existence...but we came to some very similar UX.  The big difference is BetterDynAdmin is a grease monkey based client side manipulation of the existing dyn-admin while swole-dyn-admin is a server side modification of ATG.  The former requires installation in every machine of every user (with very easy steps) while the latter requires no installation on client devices.
+
 ## Disclaimer
 
 This project is completely unofficial and in no way endorsed by Oracle Corporation. Oracle ATG web commerce is a copyrighted product of Oracle Corporation and no rights are contested by this project or it contents.
