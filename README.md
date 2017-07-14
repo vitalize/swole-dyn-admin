@@ -1,3 +1,5 @@
+[![Travis](https://img.shields.io/travis/vitalize/swole-dyn-admin.svg)](https://travis-ci.org/vitalize/swole-dyn-admin)
+
 # swole-dyn-admin
 A collection of classes that can make your Oracle ATG Commerce Dyn Admin Swole.
 
