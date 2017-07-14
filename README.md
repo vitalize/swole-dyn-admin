@@ -1,6 +1,7 @@
 [![Travis](https://img.shields.io/travis/vitalize/swole-dyn-admin.svg)](https://travis-ci.org/vitalize/swole-dyn-admin)
 [![Maven Central](https://img.shields.io/maven-central/v/com.vitalize/swole-dyn-admin.svg)](https://search.maven.org/#search%7Cga%7C1%7Ca%3A%22swole-dyn-admin%22)
 [![GitHub release](https://img.shields.io/github/release/vitalize/swole-dyn-admin.svg)](https://github.com/vitalize/swole-dyn-admin/releases)
+[![Gitter](https://img.shields.io/gitter/room/vitalize/swole-dyn-admin.svg)](https://gitter.im/vitalize/swole-dyn-admin)
 
 # swole-dyn-admin
 A collection of classes that can make your Oracle ATG Commerce Dyn Admin Swole.
