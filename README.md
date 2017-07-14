@@ -4,6 +4,8 @@
 [![Gitter](https://img.shields.io/gitter/room/vitalize/swole-dyn-admin.svg)](https://gitter.im/vitalize/swole-dyn-admin)
 
 # swole-dyn-admin
+
+[![Join the chat at https://gitter.im/vitalize/swole-dyn-admin](https://badges.gitter.im/vitalize/swole-dyn-admin.svg)](https://gitter.im/vitalize/swole-dyn-admin?utm_source=badge&utm_medium=badge&utm_campaign=pr-badge&utm_content=badge)
 A collection of classes that can make your Oracle ATG Commerce Dyn Admin Swole.
 
 ## What?
