@@ -364,6 +364,22 @@ public class SwoleGSAAdminServlet extends GSAAdminServlet {
 
                                                     updatedValue = Arrays.toString(values).replaceAll(">, <", ">,<");
 
+                                                } else if (Map.class.equals(descriptorClass)){
+                                                    //TODO: what happens if a value has a , ?
+                                                    String[] valuePairs = propValue.split(",");
+
+                                                    for (int i = 0; i < valuePairs.length; i++) {
+                                                        String[] keyVal = valuePairs[i].split("=");
+
+                                                        valuePairs[i] = keyVal[0] + "=" + linkToRQLQueryById(
+                                                            pathToThisComponent,
+                                                            propItemDescriptor.getItemDescriptorName(),
+                                                            //TODO: what if name or value has =?
+                                                            keyVal[1]
+                                                        );
+                                                    }
+
+                                                    updatedValue = Arrays.toString(valuePairs).replaceAll(">, <", ">,<");
                                                 }
                                                 //TODO support maps
 
@@ -559,7 +575,7 @@ public class SwoleGSAAdminServlet extends GSAAdminServlet {
             pathToThisComponent,
             itemType,
             String.format(
-                "ID=\"%s\"",
+                "ID in {\"%s\"}",
                 id
             ),
             id
