@@ -62,28 +62,23 @@ public class SwoleGSAAdminServlet extends GSAAdminServlet {
 		this.repo = service;
 	}
 
-    private void outputRQLToolbar(ServletOutputStream o) throws IOException {
+    private void outputRQLToolbar(
+        Map<String, RepositoryItemDescriptor> itemDescriptorLookup,
+        ServletOutputStream o
+    ) throws IOException {
 
         o.println("<script>");
 
         //Output a itemDescriptor taxonomy for the toolbars to use
         o.println("var itemDescriptors = {};");
 
-        for(String n : repo.getItemDescriptorNames()){
+        for(Map.Entry<String,RepositoryItemDescriptor> entry : itemDescriptorLookup.entrySet()){
 
-            RepositoryItemDescriptor descriptor = null;
-
-            try {
-
-                descriptor = repo.getItemDescriptor(n);
-
-            } catch (RepositoryException e){
-                //TODO: log a warning (ATG stubs doesn't have logging signatures yet
-            }
+            RepositoryItemDescriptor descriptor = entry.getValue();
 
             //only output non error descriptors
             if(descriptor != null){
-                o.println("itemDescriptors['" + n + "'] = {" );
+                o.println("itemDescriptors['" + entry.getKey() + "'] = {" );
 
                 o.println("\tprops : {" );
                 boolean firstProp = true;
@@ -101,13 +96,15 @@ public class SwoleGSAAdminServlet extends GSAAdminServlet {
 
                     if(property instanceof RepositoryPropertyDescriptor){
                         RepositoryPropertyDescriptor repoProp = (RepositoryPropertyDescriptor)property;
-
                         o.println("\t\t\tqueryable : " + repoProp.isQueryable() + ",");
                         o.println("\t\t\tderived : " + repoProp.isDerived() + ",");
                         o.println("\t\t\tdefault : '" + repoProp.getDefaultValueString() + "',");
                         o.println("\t\t\ttypeName : '" + repoProp.getTypeName() + "',");
                         o.println("\t\t\ttypeClass : '" + repoProp.getPropertyType().getName() + "',");
-                        o.println("\t\t\ttypeComponentClass : '" + (repoProp.getComponentPropertyType() == null ? "" : repoProp.getComponentPropertyType().getName()) + "'");
+                        o.println("\t\t\ttypeComponentClass : '" + (repoProp.getComponentPropertyType() == null ? "" : repoProp.getComponentPropertyType().getName()) + "',");
+                        o.println("\t\t\titemDescriptorName : '" + (repoProp.getPropertyItemDescriptor() == null ? "" : repoProp.getPropertyItemDescriptor().getItemDescriptorName()) + "',");
+                        o.println("\t\t\tcomponentItemDescriptorName : '" + (repoProp.getComponentItemDescriptor() == null ? "" : repoProp.getComponentItemDescriptor().getItemDescriptorName()) + "'");
+
                     }
 
                     o.println("\t\t}");
@@ -165,7 +162,23 @@ public class SwoleGSAAdminServlet extends GSAAdminServlet {
     ) throws ServletException, IOException {
 
 
-	    //We use a hash set incase they have duplicate queries for some reason
+        final Map<String, RepositoryItemDescriptor> itemDescriptorLookup = new HashMap<String, RepositoryItemDescriptor>();
+
+        for(String n : repo.getItemDescriptorNames()) {
+
+            try {
+
+                itemDescriptorLookup.put(
+                    n,
+                    repo.getItemDescriptor(n)
+                );
+
+            } catch (RepositoryException e) {
+                //TODO: log a warning (ATG stubs doesn't have logging signatures yet
+            }
+        }
+
+            //We use a hash set in case they have duplicate queries for some reason
 	    final Queue<Query> queries = new LinkedList<Query>();
 
         String incomingQuery = req.getParameter("xmltext");
@@ -225,13 +238,23 @@ public class SwoleGSAAdminServlet extends GSAAdminServlet {
             new DelegatingServletOutputStream(out){
 
                 private boolean inPreCodeBlock = false;
+                private Map<String, RepositoryPropertyDescriptor> currentItemPropertyDescriptors = Collections.emptyMap();
 
                 @Override
                 public void println(String s) throws IOException {
 
+                    if(s == null){
+                        out.println(s);
+                        return;
+                    }
+
                     if(RQL_TEXT_AREA_MARKUP.equals(s)) {
 
-                        outputRQLToolbar(out);
+                        outputRQLToolbar(
+                            itemDescriptorLookup,
+                            out
+                        );
+
                         //While we're at it...make that a bit bigger
                         s = RQL_TEXT_AREA_MARKUP_BIGGER;
 
@@ -242,8 +265,31 @@ public class SwoleGSAAdminServlet extends GSAAdminServlet {
                     } else if("<pre><code>".equals(s)){
                         inPreCodeBlock = true;
                         out.println("<span id=\"RQL_RESULTS\"></span>");
-                    } else if("</code></pre><p>".equals(s)){
+                    } else if("</code></pre><p>".equals(s)) {
                         inPreCodeBlock = false;
+                    } else if (inPreCodeBlock && s.trim().startsWith("&lt;add-item item-descriptor=&quot;")) {
+                        String itemType = s.trim().replace("&lt;add-item item-descriptor=&quot;", "").split("&quot;")[0];
+
+                        if(itemDescriptorLookup.containsKey(itemType)) {
+                            currentItemPropertyDescriptors = new HashMap<String, RepositoryPropertyDescriptor>();
+
+                            for(DynamicPropertyDescriptor p : itemDescriptorLookup.get(itemType).getPropertyDescriptors()){
+                                if(p instanceof RepositoryPropertyDescriptor) {
+                                    currentItemPropertyDescriptors.put(
+                                        p.getName(),
+                                        (RepositoryPropertyDescriptor)p
+                                    );
+                                }
+                            }
+                        }
+
+
+                    } else if (inPreCodeBlock && s.trim().startsWith("&lt;/add-item&gt;")) {
+                        //clear it out when we get out of an add item
+                        currentItemPropertyDescriptors = Collections.emptyMap();
+                    } else if (s.contains("<set-property name=\"")){
+
+
                     } else if(inPreCodeBlock && !queries.isEmpty()){
                         //this isn't the best way to do this i'm sure..but it's tricky because the text we link does not include
                         //the item descriptor...and we have to be sure to only link 1 line per query
