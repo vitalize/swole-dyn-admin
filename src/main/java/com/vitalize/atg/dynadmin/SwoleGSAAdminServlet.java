@@ -292,7 +292,7 @@ public class SwoleGSAAdminServlet extends GSAAdminServlet {
                         for(String  l : lines){
 
                             if (l.trim().startsWith("&lt;add-item item-descriptor=&quot;")) {
-                                String itemType = s.trim().replace("&lt;add-item item-descriptor=&quot;", "").split("&quot;")[0];
+                                String itemType = l.trim().replace("&lt;add-item item-descriptor=&quot;", "").split("&quot;")[0];
 
                                 if(itemDescriptorLookup.containsKey(itemType)) {
                                     currentItemPropertyDescriptors = new HashMap<String, RepositoryPropertyDescriptor>();
