@@ -101,6 +101,8 @@ public class SwoleGSAAdminServletTest {
             }
         };
 
+        when(mockGSARepo.getItemDescriptorNames())
+            .thenReturn(new String[]{});
 
         subject.printAdmin(
             mockRequest,
@@ -566,6 +568,8 @@ public class SwoleGSAAdminServletTest {
             }
         };
 
+        when(mockGSARepo.getItemDescriptorNames())
+            .thenReturn(new String[]{});
 
         when(mockRequest.getParameter("item-type"))
             .thenReturn("dog");
@@ -619,6 +623,9 @@ public class SwoleGSAAdminServletTest {
         when(mockRequest.getParameter("rql-query"))
             .thenReturn("ALL RANGE 1+10");
 
+        when(mockGSARepo.getItemDescriptorNames())
+            .thenReturn(new String[]{});
+
         subject.printAdmin(
             mockRequest,
             mockResponse,
@@ -662,6 +669,8 @@ public class SwoleGSAAdminServletTest {
             }
         };
 
+        when(mockGSARepo.getItemDescriptorNames())
+            .thenReturn(new String[]{});
 
         when(mockRequest.getParameter("item-type"))
             .thenReturn("dog");
@@ -709,6 +718,8 @@ public class SwoleGSAAdminServletTest {
             }
         };
 
+        when(mockGSARepo.getItemDescriptorNames())
+            .thenReturn(new String[]{});
 
         subject.printAdmin(
             mockRequest,
@@ -762,6 +773,9 @@ public class SwoleGSAAdminServletTest {
                 return mockDynamoRequest;
             }
         };
+
+        when(mockGSARepo.getItemDescriptorNames())
+            .thenReturn(new String[]{});
 
         when(mockRequest.getParameter("xmltext"))
             .thenReturn("<query-items item-descriptor=\"cat\">ALL RANGE 10+20</query-items>");
