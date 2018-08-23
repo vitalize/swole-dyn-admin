@@ -7,6 +7,7 @@ import atg.core.util.StringUtils;
 import atg.nucleus.Nucleus;
 import atg.nucleus.logging.ApplicationLogging;
 import atg.repository.RepositoryException;
+import atg.repository.RepositoryItem;
 import atg.repository.RepositoryItemDescriptor;
 import atg.repository.RepositoryPropertyDescriptor;
 import atg.servlet.DynamoHttpServletRequest;
@@ -26,8 +27,10 @@ import javax.xml.parsers.DocumentBuilderFactory;
 import javax.xml.parsers.ParserConfigurationException;
 import java.io.ByteArrayInputStream;
 import java.io.IOException;
+import java.io.UnsupportedEncodingException;
 import java.net.URLEncoder;
 import java.util.*;
+import java.util.regex.Pattern;
 
 /**
  * Puts some helper buttons around that RQL query box
@@ -287,7 +290,74 @@ public class SwoleGSAAdminServlet extends GSAAdminServlet {
                     } else if (inPreCodeBlock && s.trim().startsWith("&lt;/add-item&gt;")) {
                         //clear it out when we get out of an add item
                         currentItemPropertyDescriptors = Collections.emptyMap();
-                    } else if (s.contains("<set-property name=\"")){
+                    } else if (s.contains("&lt;set-property name=&quot;")){
+
+                        String[] parts = s.split("&quot;");
+
+                        if(parts.length == 3) {
+                            String propName = parts[1];
+
+                            if (currentItemPropertyDescriptors.containsKey(propName)) {
+
+                                RepositoryPropertyDescriptor propDescriptor = currentItemPropertyDescriptors.get(propName);
+
+                                //We can only link if we know the other repository descriptor type
+                                RepositoryItemDescriptor propItemDescriptor = propDescriptor.getComponentItemDescriptor();
+                                if(propItemDescriptor == null){
+                                    propItemDescriptor = propDescriptor.getPropertyItemDescriptor();
+                                }
+
+                                //only make links if there is a propItemDescriptor as those are the only things we can link to
+                                if(propItemDescriptor != null) {
+
+
+                                    String propValue = propertyValueExtract(s);
+
+                                    //Can't link null values
+                                    if (propValue != null && !"__NULL__".equals(propValue) && !propValue.trim().isEmpty()) {
+
+
+                                        //it's a another repo item, but depending on if it's a single, or collection & which collection type the behaviour is different.
+
+                                        Class descriptorClass = propDescriptor.getPropertyType();
+                                        String updatedValue = propValue;
+
+                                        if (String.class.equals(descriptorClass) || RepositoryItem.class.equals(descriptorClass)) {
+                                            updatedValue = linkToRQLQueryById(
+                                                pathToThisComponent,
+                                                propItemDescriptor.getItemDescriptorName(),
+                                                propValue
+                                            );
+
+                                        } else if (Set.class.equals(descriptorClass) || List.class.equals(descriptorClass)) {
+                                            //TODO: what happens if a value has a , ?
+                                            String[] values = propValue.split(",");
+
+                                            for(int i = 0; i< values.length;i++){
+                                                values[i] = linkToRQLQueryById(
+                                                    pathToThisComponent,
+                                                    propItemDescriptor.getItemDescriptorName(),
+                                                    values[i]
+                                                );
+                                            }
+
+                                            updatedValue = Arrays.toString(values).replaceAll(">, <", ">,<");
+
+                                        }
+                                        //TODO support maps
+
+                                        s = s.replace(
+                                            propValue,
+                                            updatedValue
+                                        );
+                                    }
+
+                                }
+
+                            }
+                        }
+
+
 
 
                     } else if(inPreCodeBlock && !queries.isEmpty()){
@@ -313,7 +383,15 @@ public class SwoleGSAAdminServlet extends GSAAdminServlet {
                                 sb.append(l);
                             } else if(l.contains(queryToMatch.rqlInPreCode)){
                                 //it's in this line
-                                sb.append(l.replace(queryToMatch.rqlInPreCode, "<a href=\"" + pathToThisComponent + "?item-type=" + URLEncoder.encode(queryToMatch.itemType, "UTF-8") + "&rql-query=" + URLEncoder.encode(queryToMatch.rql, "UTF-8") + "#RQL_RESULTS\">" + queryToMatch.rqlInPreCode + "</a>"));
+                                sb.append(l.replace(
+                                    queryToMatch.rqlInPreCode,
+                                    linkToRQLQuery(
+                                        pathToThisComponent,
+                                        queryToMatch.itemType,
+                                        queryToMatch.rql,
+                                        queryToMatch.rqlInPreCode
+                                    )
+                                ));
                                 //start looking for the next query
 
                                 //last time through this will be empty
@@ -441,6 +519,46 @@ public class SwoleGSAAdminServlet extends GSAAdminServlet {
 
         return r;
 
+    }
+
+    private static final Pattern CDATA_VALUE_EXTRATOR = Pattern.compile(".*&lt;!\\[CDATA\\[(.*)]]&gt;.*");
+
+    private static String propertyValueExtract(
+        String line
+    ){
+        java.util.regex.Matcher match = CDATA_VALUE_EXTRATOR.matcher(line);
+        if(match.find()){
+            return match.group(1);
+        }
+
+        return null;
+
+    }
+
+
+    private static String linkToRQLQuery(
+        String pathToThisComponent,
+        String itemType,
+        String rql,
+        String text
+    ) throws UnsupportedEncodingException {
+        return "<a href=\"" + pathToThisComponent + "?item-type=" + URLEncoder.encode(itemType, "UTF-8") + "&rql-query=" + URLEncoder.encode(rql, "UTF-8") + "#RQL_RESULTS\">" + text + "</a>";
+    }
+
+    private static String linkToRQLQueryById(
+        String pathToThisComponent,
+        String itemType,
+        String id
+    ) throws UnsupportedEncodingException {
+        return linkToRQLQuery(
+            pathToThisComponent,
+            itemType,
+            String.format(
+                "ID=\"%s\"",
+                id
+            ),
+            id
+        );
     }
 
 
