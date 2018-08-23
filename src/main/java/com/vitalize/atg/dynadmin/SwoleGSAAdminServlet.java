@@ -241,7 +241,7 @@ public class SwoleGSAAdminServlet extends GSAAdminServlet {
             new DelegatingServletOutputStream(out){
 
                 private boolean inPreCodeBlock = false;
-                private Map<String, RepositoryPropertyDescriptor> currentItemPropertyDescriptors = Collections.emptyMap();
+
 
                 @Override
                 public void println(String s) throws IOException {
@@ -270,95 +270,6 @@ public class SwoleGSAAdminServlet extends GSAAdminServlet {
                         out.println("<span id=\"RQL_RESULTS\"></span>");
                     } else if("</code></pre><p>".equals(s)) {
                         inPreCodeBlock = false;
-                    } else if (inPreCodeBlock && s.trim().startsWith("&lt;add-item item-descriptor=&quot;")) {
-                        String itemType = s.trim().replace("&lt;add-item item-descriptor=&quot;", "").split("&quot;")[0];
-
-                        if(itemDescriptorLookup.containsKey(itemType)) {
-                            currentItemPropertyDescriptors = new HashMap<String, RepositoryPropertyDescriptor>();
-
-                            for(DynamicPropertyDescriptor p : itemDescriptorLookup.get(itemType).getPropertyDescriptors()){
-                                if(p instanceof RepositoryPropertyDescriptor) {
-                                    currentItemPropertyDescriptors.put(
-                                        p.getName(),
-                                        (RepositoryPropertyDescriptor)p
-                                    );
-                                }
-                            }
-                        }
-
-
-                    } else if (inPreCodeBlock && s.trim().startsWith("&lt;/add-item&gt;")) {
-                        //clear it out when we get out of an add item
-                        currentItemPropertyDescriptors = Collections.emptyMap();
-                    } else if (s.contains("&lt;set-property name=&quot;")){
-
-                        String[] parts = s.split("&quot;");
-
-                        if(parts.length == 3) {
-                            String propName = parts[1];
-
-                            if (currentItemPropertyDescriptors.containsKey(propName)) {
-
-                                RepositoryPropertyDescriptor propDescriptor = currentItemPropertyDescriptors.get(propName);
-
-                                //We can only link if we know the other repository descriptor type
-                                RepositoryItemDescriptor propItemDescriptor = propDescriptor.getComponentItemDescriptor();
-                                if(propItemDescriptor == null){
-                                    propItemDescriptor = propDescriptor.getPropertyItemDescriptor();
-                                }
-
-                                //only make links if there is a propItemDescriptor as those are the only things we can link to
-                                if(propItemDescriptor != null) {
-
-
-                                    String propValue = propertyValueExtract(s);
-
-                                    //Can't link null values
-                                    if (propValue != null && !"__NULL__".equals(propValue) && !propValue.trim().isEmpty()) {
-
-
-                                        //it's a another repo item, but depending on if it's a single, or collection & which collection type the behaviour is different.
-
-                                        Class descriptorClass = propDescriptor.getPropertyType();
-                                        String updatedValue = propValue;
-
-                                        if (String.class.equals(descriptorClass) || RepositoryItem.class.equals(descriptorClass)) {
-                                            updatedValue = linkToRQLQueryById(
-                                                pathToThisComponent,
-                                                propItemDescriptor.getItemDescriptorName(),
-                                                propValue
-                                            );
-
-                                        } else if (Set.class.equals(descriptorClass) || List.class.equals(descriptorClass)) {
-                                            //TODO: what happens if a value has a , ?
-                                            String[] values = propValue.split(",");
-
-                                            for(int i = 0; i< values.length;i++){
-                                                values[i] = linkToRQLQueryById(
-                                                    pathToThisComponent,
-                                                    propItemDescriptor.getItemDescriptorName(),
-                                                    values[i]
-                                                );
-                                            }
-
-                                            updatedValue = Arrays.toString(values).replaceAll(">, <", ">,<");
-
-                                        }
-                                        //TODO support maps
-
-                                        s = s.replace(
-                                            propValue,
-                                            updatedValue
-                                        );
-                                    }
-
-                                }
-
-                            }
-                        }
-
-
-
 
                     } else if(inPreCodeBlock && !queries.isEmpty()){
                         //this isn't the best way to do this i'm sure..but it's tricky because the text we link does not include
@@ -370,13 +281,107 @@ public class SwoleGSAAdminServlet extends GSAAdminServlet {
                         //To make order not matter we'd have to loop through the list of queries for each line
                         //
 
+
+                        Map<String, RepositoryPropertyDescriptor> currentItemPropertyDescriptors = Collections.emptyMap();
+
                         Query queryToMatch = queries.remove();
 
                         String[] lines = s.split("\n");
                         StringBuilder sb = new StringBuilder();
 
                         for(String  l : lines){
-                            if(queryToMatch == null || l.trim().startsWith("<")){
+
+                            if (l.trim().startsWith("&lt;add-item item-descriptor=&quot;")) {
+                                String itemType = s.trim().replace("&lt;add-item item-descriptor=&quot;", "").split("&quot;")[0];
+
+                                if(itemDescriptorLookup.containsKey(itemType)) {
+                                    currentItemPropertyDescriptors = new HashMap<String, RepositoryPropertyDescriptor>();
+
+                                    for(DynamicPropertyDescriptor p : itemDescriptorLookup.get(itemType).getPropertyDescriptors()){
+                                        if(p instanceof RepositoryPropertyDescriptor) {
+                                            currentItemPropertyDescriptors.put(
+                                                p.getName(),
+                                                (RepositoryPropertyDescriptor)p
+                                            );
+                                        }
+                                    }
+                                }
+
+
+                            } else if (l.trim().startsWith("&lt;/add-item&gt;")) {
+                                //clear it out when we get out of an add item
+                                currentItemPropertyDescriptors = Collections.emptyMap();
+                            } else if (l.contains("&lt;set-property name=&quot;")) {
+
+                                String[] parts = l.split("&quot;");
+
+                                if (parts.length == 3) {
+                                    String propName = parts[1];
+
+                                    if (currentItemPropertyDescriptors.containsKey(propName)) {
+
+                                        RepositoryPropertyDescriptor propDescriptor = currentItemPropertyDescriptors.get(propName);
+
+                                        //We can only link if we know the other repository descriptor type
+                                        RepositoryItemDescriptor propItemDescriptor = propDescriptor.getComponentItemDescriptor();
+                                        if (propItemDescriptor == null) {
+                                            propItemDescriptor = propDescriptor.getPropertyItemDescriptor();
+                                        }
+
+                                        //only make links if there is a propItemDescriptor as those are the only things we can link to
+                                        if (propItemDescriptor != null) {
+
+
+                                            String propValue = propertyValueExtract(l);
+
+                                            //Can't link null values
+                                            if (propValue != null && !"__NULL__".equals(propValue) && !propValue.trim().isEmpty()) {
+
+
+                                                //it's a another repo item, but depending on if it's a single, or collection & which collection type the behaviour is different.
+
+                                                Class descriptorClass = propDescriptor.getPropertyType();
+                                                String updatedValue = propValue;
+
+                                                if (String.class.equals(descriptorClass) || RepositoryItem.class.equals(descriptorClass)) {
+                                                    updatedValue = linkToRQLQueryById(
+                                                        pathToThisComponent,
+                                                        propItemDescriptor.getItemDescriptorName(),
+                                                        propValue
+                                                    );
+
+                                                } else if (Set.class.equals(descriptorClass) || List.class.equals(descriptorClass)) {
+                                                    //TODO: what happens if a value has a , ?
+                                                    String[] values = propValue.split(",");
+
+                                                    for (int i = 0; i < values.length; i++) {
+                                                        values[i] = linkToRQLQueryById(
+                                                            pathToThisComponent,
+                                                            propItemDescriptor.getItemDescriptorName(),
+                                                            values[i]
+                                                        );
+                                                    }
+
+                                                    updatedValue = Arrays.toString(values).replaceAll(">, <", ">,<");
+
+                                                }
+                                                //TODO support maps
+
+                                                l = l.replace(
+                                                    propValue,
+                                                    updatedValue
+                                                );
+                                            }
+
+                                        }
+
+                                    }
+                                }
+                            }
+
+
+
+                            if(queryToMatch == null || l.trim().startsWith("&lt;")){
                                 //A lot of lines of data results start with < and never have queries
                                 //so let's ignore those
                                 //also this projects us in the unlikely case a piece of data has text matching our query RQL

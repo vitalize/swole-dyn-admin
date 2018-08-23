@@ -831,8 +831,8 @@ public class SwoleGSAAdminServletTest {
 
                 out.println(PRECODE_MARKUP_ENTER);
 
-                out.println("<set-property name=\"seoTags\"><![CDATA[ALL RANGE 0+10]]></set-property>");
-                out.println("<!-- export is false   <set-property name=\"version\"><![CDATA[ALL RANGE 0+10]]></set-property>  -->");
+                out.println("&lt;set-property name=\"seoTags\"><![CDATA[ALL RANGE 0+10]]></set-property>");
+                out.println("&lt;!-- export is false   <set-property name=\"version\"><![CDATA[ALL RANGE 0+10]]></set-property>  -->");
 
                 out.println(PRECODE_MARKUP_EXIT);
 
@@ -864,16 +864,16 @@ public class SwoleGSAAdminServletTest {
 
 
         assertThat(
-            "matching property text after must NOT have been altered",
+            "matching property text after must NOT have been altered even though content matches",
             allOutput,
-            containsString("<set-property name=\"seoTags\"><![CDATA[ALL RANGE 0+10]]></set-property>")
+            containsString("&lt;set-property name=\"seoTags\"><![CDATA[ALL RANGE 0+10]]></set-property>")
         );
 
 
         assertThat(
-            "matching property text before must NOT have been altered",
+            "matching property text before must NOT have been altered even though content matches",
             allOutput,
-            containsString("<!-- export is false   <set-property name=\"version\"><![CDATA[ALL RANGE 0+10]]></set-property>  -->")
+            containsString("&lt;!-- export is false   <set-property name=\"version\"><![CDATA[ALL RANGE 0+10]]></set-property>  -->")
         );
 
 
