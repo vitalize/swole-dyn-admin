@@ -4,6 +4,7 @@ import atg.adapter.gsa.GSAAdminServlet;
 import atg.adapter.gsa.GSARepository;
 import atg.beans.DynamicPropertyDescriptor;
 import atg.core.util.StringUtils;
+import atg.nucleus.GenericService;
 import atg.nucleus.Nucleus;
 import atg.nucleus.logging.ApplicationLogging;
 import atg.repository.RepositoryException;
@@ -331,6 +332,12 @@ public class SwoleGSAAdminServlet extends GSAAdminServlet {
                                         //only make links if there is a propItemDescriptor as those are the only things we can link to
                                         if (propItemDescriptor != null) {
 
+                                            //Some props are from other repos
+                                            GenericService repo = (GenericService)propItemDescriptor.getRepository();
+                                            String pathToPropRepo = formatServiceName(
+                                                repo.getAbsoluteName(),
+                                                req
+                                            );
 
                                             String propValue = propertyValueExtract(l);
 
@@ -345,7 +352,7 @@ public class SwoleGSAAdminServlet extends GSAAdminServlet {
 
                                                 if (String.class.equals(descriptorClass) || RepositoryItem.class.equals(descriptorClass)) {
                                                     updatedValue = linkToRQLQueryById(
-                                                        pathToThisComponent,
+                                                        pathToPropRepo,
                                                         propItemDescriptor.getItemDescriptorName(),
                                                         propValue
                                                     );
@@ -356,7 +363,7 @@ public class SwoleGSAAdminServlet extends GSAAdminServlet {
 
                                                     for (int i = 0; i < values.length; i++) {
                                                         values[i] = linkToRQLQueryById(
-                                                            pathToThisComponent,
+                                                            pathToPropRepo,
                                                             propItemDescriptor.getItemDescriptorName(),
                                                             values[i]
                                                         );
@@ -372,7 +379,7 @@ public class SwoleGSAAdminServlet extends GSAAdminServlet {
                                                         String[] keyVal = valuePairs[i].split("=");
 
                                                         valuePairs[i] = keyVal[0] + "=" + linkToRQLQueryById(
-                                                            pathToThisComponent,
+                                                            pathToPropRepo,
                                                             propItemDescriptor.getItemDescriptorName(),
                                                             //TODO: what if name or value has =?
                                                             keyVal[1]
