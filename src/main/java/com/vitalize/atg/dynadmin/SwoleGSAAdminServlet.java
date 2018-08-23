@@ -104,7 +104,10 @@ public class SwoleGSAAdminServlet extends GSAAdminServlet {
 
                         o.println("\t\t\tqueryable : " + repoProp.isQueryable() + ",");
                         o.println("\t\t\tderived : " + repoProp.isDerived() + ",");
-                        o.println("\t\t\tdefault : '" + repoProp.getDefaultValueString() + "'");
+                        o.println("\t\t\tdefault : '" + repoProp.getDefaultValueString() + "',");
+                        o.println("\t\t\ttypeName : '" + repoProp.getTypeName() + "',");
+                        o.println("\t\t\ttypeClass : '" + repoProp.getPropertyType().getName() + "',");
+                        o.println("\t\t\ttypeComponentClass : '" + (repoProp.getComponentPropertyType() == null ? "" : repoProp.getComponentPropertyType().getName()) + "'");
                     }
 
                     o.println("\t\t}");
