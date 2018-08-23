@@ -5,7 +5,7 @@ import java.io.IOException;
 
 /**
  * An implementation of a ServletOutputStream that delegates all methods to a passed in ServletOuputStream
- * This is used extensively to detect when out of the box ATG is outputing some html you want to inject your stuff
+ * This is used extensively to detect when out of the box ATG is outputting some html you want to inject your stuff
  * before or after.
  */
 public class DelegatingServletOutputStream extends ServletOutputStream {

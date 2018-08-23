@@ -263,7 +263,7 @@ public class SwoleGSAAdminServlet extends GSAAdminServlet {
                             if(queryToMatch == null || l.trim().startsWith("<")){
                                 //A lot of lines of data results start with < and never have queries
                                 //so let's ignore those
-                                //also this projects us in the unlikley case a piece of data has text matching our query RQL
+                                //also this projects us in the unlikely case a piece of data has text matching our query RQL
                                 sb.append(l);
                             } else if(l.contains(queryToMatch.rqlInPreCode)){
                                 //it's in this line
