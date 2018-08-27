@@ -272,7 +272,7 @@ public class SwoleGSAAdminServlet extends GSAAdminServlet {
                     } else if("</code></pre><p>".equals(s)) {
                         inPreCodeBlock = false;
 
-                    } else if(inPreCodeBlock && !queries.isEmpty()){
+                    } else if(inPreCodeBlock){
                         //this isn't the best way to do this i'm sure..but it's tricky because the text we link does not include
                         //the item descriptor...and we have to be sure to only link 1 line per query
                         //for example imagine two ALL RANGE 0+10 queries on 2 distinct items..if we ONLY matched on rql
@@ -285,7 +285,12 @@ public class SwoleGSAAdminServlet extends GSAAdminServlet {
 
                         Map<String, RepositoryPropertyDescriptor> currentItemPropertyDescriptors = Collections.emptyMap();
 
-                        Query queryToMatch = queries.remove();
+                        Query queryToMatch = null;
+                        if(!queries.isEmpty()){
+                            queryToMatch = queries.remove();
+                        }
+
+
 
                         String[] lines = s.split("\n");
                         StringBuilder sb = new StringBuilder();
@@ -370,6 +375,8 @@ public class SwoleGSAAdminServlet extends GSAAdminServlet {
                                                     }
 
                                                     updatedValue = Arrays.toString(values).replaceAll(">, <", ">,<");
+                                                    //remove brackets
+                                                    updatedValue = updatedValue.substring(1, updatedValue.length() - 1);
 
                                                 } else if (Map.class.equals(descriptorClass)){
                                                     //TODO: what happens if a value has a , ?
@@ -386,9 +393,10 @@ public class SwoleGSAAdminServlet extends GSAAdminServlet {
                                                         );
                                                     }
 
-                                                    updatedValue = Arrays.toString(valuePairs).replaceAll(">, <", ">,<");
+                                                    updatedValue = Arrays.toString(valuePairs).replaceAll(">, ", ">,");
+                                                    //remove brackets
+                                                    updatedValue = updatedValue.substring(1, updatedValue.length() - 1);
                                                 }
-                                                //TODO support maps
 
                                                 l = l.replace(
                                                     propValue,
@@ -404,12 +412,12 @@ public class SwoleGSAAdminServlet extends GSAAdminServlet {
 
 
 
-                            if(queryToMatch == null || l.trim().startsWith("&lt;")){
+                            if(l.trim().startsWith("&lt;")){
                                 //A lot of lines of data results start with < and never have queries
                                 //so let's ignore those
                                 //also this projects us in the unlikely case a piece of data has text matching our query RQL
                                 sb.append(l);
-                            } else if(l.contains(queryToMatch.rqlInPreCode)){
+                            } else if(queryToMatch != null&& l.contains(queryToMatch.rqlInPreCode)){
                                 //it's in this line
                                 sb.append(l.replace(
                                     queryToMatch.rqlInPreCode,
