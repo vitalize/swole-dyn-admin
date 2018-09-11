@@ -33,9 +33,9 @@ The RQL Box is now bigger...but it's better too.  When you submit a query you no
 It's reasonable to assume a lot of the time you are doing RQL queries you are troubleshooting an issue.  An important component of troubleshooting is sharing discoveries with your team.  This has always been hard in the dyn admin because it requires sharing the link to the admin servlet, credentials, and usually the RQL query that shows the data.  With the SwoleGSAAdminServlet the first and third pieces are combined in a single link that will execute your `query-items` query!  What's more every `query-items` you perform now has a shareable link generated for it.
 ![Take this and shove it in your Jira ticket](/screenshots/SwoleGSAAdminServlet/link-to-rql-query.png)
 
-#### RQL Item Navigation
+#### RQL Item Link Navigation
 When viewing an RQL result many times the item you are looking at relates to other items in the same or other repositories.  Generally this requires finding the repository and adding more RQL.  Swole Dyn Admin automatically hotlinks any related items using the Link to RQL Query functionality so that admins may browse through the related items with easke
-![Take this and shove it in your Jira ticket](/screenshots/SwoleGSAAdminServlet/rql-item-navigation.png)
+![Take this and shove it in your Jira ticket](/screenshots/SwoleGSAAdminServlet/rql-item-link-navigation.png)
 
 ## How?
 The jar contains a bunch of extensions to common ATG nucleus classes.  Drop properties files that override the class used with the swole version.  
