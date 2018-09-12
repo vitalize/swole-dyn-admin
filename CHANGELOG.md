@@ -1,3 +1,5 @@
+## 0.3.1 - TBD
+
 ## 0.2.1 - 2018-09-12
 * Added navigation links between RQL result items and their related items
 
