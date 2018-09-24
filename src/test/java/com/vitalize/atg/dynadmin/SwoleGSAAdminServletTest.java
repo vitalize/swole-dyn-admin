@@ -1232,9 +1232,134 @@ public class SwoleGSAAdminServletTest {
             )
         );
 
+    }
+
+    @Test
+    public void testMapPropsOfRepoItemWithInterestingValuesAreLinked() throws ServletException, IOException, RepositoryException {
+
+
+        final StringBuilder allOutputBuilder = new StringBuilder();
+
+        doAnswer(
+            new Answer<Object>() {
+                public Object answer(InvocationOnMock invocation) {
+                    allOutputBuilder.append(invocation.getArguments()[0]);
+                    return null;
+                }
+            }
+        ).when(mockOutputStream).println(anyString());
+
+
+        when(mockGSARepo.getItemDescriptorNames())
+            .thenReturn(new String[]{
+                "theItemType"
+            });
+
+        final String fakeGSARepoPath = "/some/path/to/Repo";
+
+        when(mockGSARepo.getAbsoluteName())
+            .thenReturn(fakeGSARepoPath);
 
 
 
+        RepositoryPropertyDescriptor fakePropMap = new FakeRepositoryPropertyDescriptor(
+            "propMap",
+            Map.class,
+            null,
+            RepositoryItem.class,
+            new FakeRepositoryItemDescriptor(
+                "propMapItemType",
+                mockGSARepo
+            )
+        );
+
+
+
+
+        RepositoryItemDescriptor fakeItemDescriptor = new FakeRepositoryItemDescriptor(
+            "theItemType",
+            mockGSARepo,
+            fakePropMap
+        );
+
+        when(mockGSARepo.getItemDescriptor("theItemType"))
+            .thenReturn(fakeItemDescriptor);
+
+
+        final String fakeDynAdminRepoPathToMockGSARepo = "/dyn/admin/path/";
+
+        SwoleGSAAdminServlet subject = new SwoleGSAAdminServlet(
+            mockGSARepo,
+            mockLogger,
+            mockNucleus,
+            mockTxManager
+        ){
+            @Override
+            protected String formatServiceName(
+                String serviceName,
+                HttpServletRequest req
+            ) {
+                if(fakeGSARepoPath == serviceName){
+                    return fakeDynAdminRepoPathToMockGSARepo;
+                }
+
+                return "";
+            }
+
+            //This is a bit tricky to test because we are relying on the stubs impl for super class
+            //but that doesn't actually do anything...anyone have a better idea?
+            @Override
+            protected void printAdminInternal(HttpServletRequest req, HttpServletResponse res, ServletOutputStream out) throws ServletException, IOException {
+
+                out.println( PRECODE_MARKUP_ENTER);
+
+                //ATG seems to send all the multiline pre stuff in a single call to println
+                out.println(
+                    "  &lt;add-item item-descriptor=&quot;theItemType&quot; id=&quot;100217&quot;&gt;  "
+
+                        //map properties are weird, expecially if they contain , in values
+                        + "\n" + "&lt;set-property name=&quot;propMap&quot;>&lt;![CDATA[name=last, first,date=val2,dog,cat=foo,bar]]&gt;&lt;/set-property&gt;"
+
+                        + "\n" + "  &lt;/add-item&gt;  "
+
+
+                );
+
+                out.println(PRECODE_MARKUP_EXIT);
+
+            }
+
+            @Override
+            protected DynamoHttpServletRequest wrapRequest(HttpServletRequest req, HttpServletResponse res, String xml) {
+                return mockDynamoRequest;
+            }
+        };
+
+
+        subject.printAdmin(
+            mockRequest,
+            mockResponse,
+            mockOutputStream
+        );
+
+
+        String allOutput = allOutputBuilder.toString();
+
+
+        //map properties are weird
+        assertThat(
+            "",
+            allOutput,
+            containsString(
+
+                "&lt;set-property name=&quot;propMap&quot;>&lt;![CDATA[" +
+                    "name=last, first" +
+                    ",date=val2" +
+                    ",dog,cat=foo,bar" +
+                    "]]&gt;&lt;/set-property&gt;"
+
+            )
+        );
 
 
     }

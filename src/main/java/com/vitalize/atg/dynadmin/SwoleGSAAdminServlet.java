@@ -364,6 +364,8 @@ public class SwoleGSAAdminServlet extends GSAAdminServlet {
 
                                                 } else if (Set.class.equals(descriptorClass) || List.class.equals(descriptorClass)) {
                                                     //TODO: what happens if a value has a , ?
+                                                    //one thing we could do is get the item and use the actual values
+                                                    //instead of trying to parse the rql
                                                     String[] values = propValue.split(",");
 
                                                     for (int i = 0; i < values.length; i++) {
@@ -379,23 +381,47 @@ public class SwoleGSAAdminServlet extends GSAAdminServlet {
                                                     updatedValue = updatedValue.substring(1, updatedValue.length() - 1);
 
                                                 } else if (Map.class.equals(descriptorClass)){
-                                                    //TODO: what happens if a value has a , ?
+                                                    //parsing a map form RQL output is error prone
+                                                    //in future maybe should actually retrieve the item
+                                                    //and then generate result from that
+                                                    //however that requires a lot more code
+
+                                                    //Some examples of weird stuff
+                                                    //key1=dog,cat,key2=other
+                                                    //key,withcomma=car
+
+
                                                     String[] valuePairs = propValue.split(",");
+
+                                                    //for now if it didn't break apart smooth...just skip it
+                                                    boolean hasUglyStuff = false;
+
+
 
                                                     for (int i = 0; i < valuePairs.length; i++) {
                                                         String[] keyVal = valuePairs[i].split("=");
 
-                                                        valuePairs[i] = keyVal[0] + "=" + linkToRQLQueryById(
-                                                            pathToPropRepo,
-                                                            propItemDescriptor.getItemDescriptorName(),
-                                                            //TODO: what if name or value has =?
-                                                            keyVal[1]
-                                                        );
+                                                        if(keyVal.length == 2) {
+                                                            valuePairs[i] = keyVal[0] + "=" + linkToRQLQueryById(
+                                                                pathToPropRepo,
+                                                                propItemDescriptor.getItemDescriptorName(),
+                                                                //TODO: what if name or value has =?
+                                                                keyVal[1]
+                                                            );
+                                                        } else {
+                                                            hasUglyStuff = true;
+                                                            break;
+                                                        }
                                                     }
 
-                                                    updatedValue = Arrays.toString(valuePairs).replaceAll(">, ", ">,");
-                                                    //remove brackets
-                                                    updatedValue = updatedValue.substring(1, updatedValue.length() - 1);
+                                                    if(hasUglyStuff){
+                                                        updatedValue = propValue;
+                                                    }else {
+
+                                                        updatedValue = Arrays.toString(valuePairs).replaceAll(">, ", ">,");
+                                                        //remove brackets
+                                                        updatedValue = updatedValue.substring(1, updatedValue.length() - 1);
+                                                    }
                                                 }
 
                                                 l = l.replace(
